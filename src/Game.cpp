@@ -5,6 +5,11 @@
 
 Game::Game() : _isPaused(true), _points(0)
 {
+    _catcher = std::make_unique<Catcher>();
+}
+
+Game::~Game()
+{
 }
 
 void Game::Resume()

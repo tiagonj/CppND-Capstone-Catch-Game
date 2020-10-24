@@ -1,6 +1,8 @@
 #ifndef CATCH_GAME_GAME_H
 #define CATCH_GAME_GAME_H
 
+#include "Catcher.h"
+
 #include <cstdint>
 #include <memory>
 
@@ -14,9 +16,7 @@ class Game
 {
   public:
     Game();
-    ~Game()
-    {
-    }
+    ~Game();
 
     void Resume();
     void Pause();
@@ -24,8 +24,15 @@ class Game
     bool IsPaused();
 
   private:
+    Game(Game &) = delete;
+    Game(Game &&) = delete;
+    Game &operator=(Game &) = delete;
+    Game &operator=(Game &&) = delete;
+
+  private:
     bool _isPaused{true};
     unsigned int _points{0};
+    std::unique_ptr<Catcher> _catcher;
 };
 
 #endif
