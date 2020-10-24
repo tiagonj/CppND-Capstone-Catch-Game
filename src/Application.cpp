@@ -1,4 +1,4 @@
-#include "GameApplication.h"
+#include "Application.h"
 #include "Rendering.h"
 
 #include <chrono>
@@ -6,9 +6,9 @@
 #include <memory>
 #include <thread>
 
-GameApplication GameApplication::_app;
+Application Application::_app;
 
-void GameApplication::Launch()
+void Application::Launch()
 {
     std::cout << "Welcome to Catch!"
               << "\n";
@@ -21,12 +21,12 @@ void GameApplication::Launch()
     // TODO handle PauseGame and QuitGame
 }
 
-void GameApplication::CreateNewGame()
+void Application::CreateNewGame()
 {
     _game = std::make_unique<Game>();
 }
 
-void GameApplication::PlayGame()
+void Application::PlayGame()
 {
     _game->Resume();
 
@@ -55,6 +55,6 @@ void GameApplication::PlayGame()
 
 int main()
 {
-    GameApplication::Launch();
+    Application::Launch();
     return 0;
 }

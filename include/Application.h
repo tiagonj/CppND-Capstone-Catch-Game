@@ -5,16 +5,16 @@
 
 #include <memory>
 
-class GameApplication
+class Application
 {
   public:
     static void Launch();
 
   private:
-    GameApplication()
+    Application()
     {
     }
-    ~GameApplication()
+    ~Application()
     {
     }
 
@@ -22,7 +22,7 @@ class GameApplication
     void PlayGame();
 
   private:
-    static GameApplication _app;
+    static Application _app;
     std::unique_ptr<Game> _game;
 };
 
