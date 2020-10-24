@@ -1,5 +1,5 @@
-#ifndef CATCH_GAME_GAME_APPLICATION_H
-#define CATCH_GAME_GAME_APPLICATION_H
+#ifndef CATCH_GAME_APPLICATION_H
+#define CATCH_GAME_APPLICATION_H
 
 #include "Game.h"
 #include "Metronome.h"
