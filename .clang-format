@@ -11,3 +11,4 @@ CompactNamespaces: false
 AllowShortFunctionsOnASingleLine: false
 AllowAllConstructorInitializersOnNextLine: false
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
+NamespaceIndentation: All

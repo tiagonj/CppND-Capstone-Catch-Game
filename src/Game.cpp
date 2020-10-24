@@ -21,13 +21,14 @@ void Game::Pause()
     _isPaused = true;
 }
 
-void Game::Update()
+void Game::Update(GameInputs &inputs)
 {
     assert(!IsPaused());
 
     for (unsigned int ii = 0; ii < 4294967295; ++ii)
     {
         // Do nothing
+        (void)inputs;
     }
 
     std::cout << "Finished updating game!"

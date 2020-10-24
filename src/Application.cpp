@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "InputReader.h"
 #include "Rendering.h"
 
 #include <cassert>
@@ -10,7 +11,7 @@
 Application Application::_app;
 
 // Private constructor/destructor
-Application::Application() : _gameMetronome(30, 120)
+Application::Application() : _gameMetronome(30, 120), _pauseMetronome(30, 120)
 {
 }
 
@@ -78,8 +79,9 @@ void Application::ExecuteGameLoop()
     while (_nextState == ApplicationState::_kPlay)
     {
         auto autoMetronome = AutoMetronome(_gameMetronome);
-        // TODO: read inputs
-        this->_game->Update();
+        GameInputs gameInputs;
+        _app.ProcessInputsWhenInGameLoop(gameInputs);
+        this->_game->Update(gameInputs);
         Rendering::RenderGame();
     }
 
@@ -92,7 +94,40 @@ void Application::ExecutePauseLoop()
 
     while (_nextState == ApplicationState::_kPause)
     {
-        // TODO: read inputs
+        auto autoMetronome = AutoMetronome(_pauseMetronome);
+        _app.ProcessInputsWhenInPauseLoop();
+        // TODO render
+    }
+}
+
+void Application::ProcessInputsWhenInGameLoop(GameInputs &gameInputs)
+{
+    ApplicationInputs appInputs;
+    InputReader::ReadInputs(appInputs, gameInputs);
+
+    if (appInputs.quitIsPressed)
+    {
+        _nextState = ApplicationState::_kQuit;
+    }
+    else if (appInputs.pauseIsPressed)
+    {
+        _nextState = ApplicationState::_kPause;
+    }
+}
+
+void Application::ProcessInputsWhenInPauseLoop()
+{
+    ApplicationInputs appInputs;
+    GameInputs gameInputsIgnored;
+    InputReader::ReadInputs(appInputs, gameInputsIgnored);
+
+    if (appInputs.quitIsPressed)
+    {
+        _nextState = ApplicationState::_kQuit;
+    }
+    else if (appInputs.pauseIsPressed)
+    {
+        _nextState = ApplicationState::_kPlay;
     }
 }
 

@@ -1,7 +1,14 @@
 #ifndef CATCH_GAME_GAME_H
 #define CATCH_GAME_GAME_H
 
+#include <cstdint>
 #include <memory>
+
+struct GameInputs
+{
+    bool moveLeftIsPressed;
+    bool moveRightIsPressed;
+};
 
 class Game
 {
@@ -13,7 +20,7 @@ class Game
 
     void Resume();
     void Pause();
-    void Update();
+    void Update(GameInputs &inputs);
     bool IsPaused();
 
   private:
