@@ -8,3 +8,4 @@ IndentCaseLabels: true
 UseTab: Never
 BreakBeforeBraces: Allman
 CompactNamespaces: false
+AllowShortFunctionsOnASingleLine: false
