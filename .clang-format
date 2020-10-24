@@ -9,3 +9,5 @@ UseTab: Never
 BreakBeforeBraces: Allman
 CompactNamespaces: false
 AllowShortFunctionsOnASingleLine: false
+AllowAllConstructorInitializersOnNextLine: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
