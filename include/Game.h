@@ -14,9 +14,11 @@ class Game
     void Resume();
     void Pause();
     void Update();
+    bool IsPaused();
 
   private:
-    // TODO
+    bool _isPaused{true};
+    unsigned int _points{0};
 };
 
 #endif

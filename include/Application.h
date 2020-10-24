@@ -2,6 +2,7 @@
 #define CATCH_GAME_GAME_APPLICATION_H
 
 #include "Game.h"
+#include "Metronome.h"
 
 #include <memory>
 
@@ -26,13 +27,15 @@ class Application
     void Run();
 
     void CreateNewGame();
-    void PlayGame();
+    void ExecuteGameLoop();
+    void ExecutePauseLoop();
 
   private:
     static Application _app; // Singleton application instance
 
     std::unique_ptr<Game> _game;
     ApplicationState _nextState{ApplicationState::_kStartNewGame};
+    Metronome _gameMetronome;
 };
 
 #endif

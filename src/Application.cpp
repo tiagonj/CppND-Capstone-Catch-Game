@@ -1,7 +1,7 @@
 #include "Application.h"
 #include "Rendering.h"
 
-#include <chrono>
+#include <cassert>
 #include <iostream>
 #include <memory>
 #include <thread>
@@ -10,9 +10,10 @@
 Application Application::_app;
 
 // Private constructor/destructor
-Application::Application()
+Application::Application() : _gameMetronome(30, 120)
 {
 }
+
 Application::~Application()
 {
 }
@@ -45,12 +46,12 @@ void Application::Run()
             }
             case _kPause:
             {
-                // TODO
+                _app.ExecutePauseLoop();
                 break;
             }
             case _kPlay:
             {
-                _app.PlayGame();
+                _app.ExecuteGameLoop();
                 break;
             }
             case _kQuit:
@@ -70,31 +71,29 @@ void Application::CreateNewGame()
     _game = std::make_unique<Game>();
 }
 
-void Application::PlayGame()
+void Application::ExecuteGameLoop()
 {
     _game->Resume();
 
-    long desiredFrameDurationInMs = 1000 / 60; // milliseconds per frame, at 60 frames per second
-
     while (_nextState == ApplicationState::_kPlay)
     {
-        auto startTime = std::chrono::system_clock::now();
+        auto autoMetronome = AutoMetronome(_gameMetronome);
         // TODO: read inputs
-        _game->Update();
+        this->_game->Update();
         Rendering::RenderGame();
-        auto endTime = std::chrono::system_clock::now();
-
-        long executionDurationInMs =
-            std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime).count();
-
-        if (executionDurationInMs < desiredFrameDurationInMs)
-        {
-            long sleepDurationInMs = desiredFrameDurationInMs - executionDurationInMs;
-            std::this_thread::sleep_for(std::chrono::milliseconds(sleepDurationInMs));
-        }
     }
 
     _game->Pause();
+}
+
+void Application::ExecutePauseLoop()
+{
+    assert(_game->IsPaused());
+
+    while (_nextState == ApplicationState::_kPause)
+    {
+        // TODO: read inputs
+    }
 }
 
 int main()
