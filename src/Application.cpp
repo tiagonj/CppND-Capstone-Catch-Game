@@ -6,19 +6,63 @@
 #include <memory>
 #include <thread>
 
+// Singleton application instance
 Application Application::_app;
+
+// Private constructor/destructor
+Application::Application()
+{
+}
+Application::~Application()
+{
+}
 
 void Application::Launch()
 {
     std::cout << "Welcome to Catch!"
               << "\n";
 
+    _app.Initialise();
+    _app.Run();
+}
+
+void Application::Initialise()
+{
     Rendering::Initialise();
+}
 
-    _app.CreateNewGame();
-    _app.PlayGame();
-
-    // TODO handle PauseGame and QuitGame
+void Application::Run()
+{
+    while (true)
+    {
+        switch (_nextState)
+        {
+            case _kStartNewGame:
+            {
+                _app.CreateNewGame();
+                _nextState = ApplicationState::_kPlay;
+                break;
+            }
+            case _kPause:
+            {
+                // TODO
+                break;
+            }
+            case _kPlay:
+            {
+                _app.PlayGame();
+                break;
+            }
+            case _kQuit:
+            {
+                return;
+            }
+            default:
+            {
+                throw "Unknown Application state!";
+            }
+        }
+    }
 }
 
 void Application::CreateNewGame()

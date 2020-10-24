@@ -5,25 +5,34 @@
 
 #include <memory>
 
+enum ApplicationState
+{
+    _kStartNewGame = 0,
+    _kPause,
+    _kPlay,
+    _kQuit
+};
+
 class Application
 {
   public:
     static void Launch();
 
   private:
-    Application()
-    {
-    }
-    ~Application()
-    {
-    }
+    Application();
+    ~Application();
+
+    void Initialise();
+    void Run();
 
     void CreateNewGame();
     void PlayGame();
 
   private:
-    static Application _app;
+    static Application _app; // Singleton application instance
+
     std::unique_ptr<Game> _game;
+    ApplicationState _nextState{ApplicationState::_kStartNewGame};
 };
 
 #endif
