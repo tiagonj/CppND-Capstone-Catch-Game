@@ -76,7 +76,7 @@ void Application::PlayGame()
 
     long desiredFrameDurationInMs = 1000 / 60; // milliseconds per frame, at 60 frames per second
 
-    while (true)
+    while (_nextState == ApplicationState::_kPlay)
     {
         auto startTime = std::chrono::system_clock::now();
         // TODO: read inputs
