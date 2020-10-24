@@ -1,0 +1,10 @@
+# Documentation: https://clang.llvm.org/docs/ClangFormatStyleOptions.html
+# Interactive guide/builder: http://clangformat.com/
+
+BasedOnStyle: LLVM
+ColumnLimit: 100
+IndentWidth: 4
+IndentCaseLabels: true
+UseTab: Never
+BreakBeforeBraces: Allman
+CompactNamespaces: false
