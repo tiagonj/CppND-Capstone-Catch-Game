@@ -20,12 +20,11 @@ Catcher::~Catcher()
 {
 }
 
-void Catcher::Update(uint32_t updatesPerSecond, bool moveLeft, bool moveRight)
+void Catcher::Update(double tickDurationInSeconds, bool moveLeft, bool moveRight)
 {
-    assert(updatesPerSecond > 0U);
+    assert(tickDurationInSeconds > 0.0);
 
     MoveDirection requestedDirection = GetRequestedMoveDirection(moveLeft, moveRight);
-    double tickDurationInSeconds = 1.0 / updatesPerSecond;
     double velocityDelta = GetVelocityDelta(tickDurationInSeconds, requestedDirection);
     double newVelocity = GetNewVelocity(velocityDelta, requestedDirection);
 

@@ -16,7 +16,7 @@ class Catcher
     Catcher();
     ~Catcher();
 
-    void Update(uint32_t updatesPerSecond, bool moveLeft, bool moveRight);
+    void Update(double tickDurationInSeconds, bool moveLeft, bool moveRight);
     float LeftEdgePosition();
     float RightEdgePosition();
 

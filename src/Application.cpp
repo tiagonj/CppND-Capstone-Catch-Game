@@ -81,7 +81,8 @@ void Application::ExecuteGameLoop()
         auto autoMetronome = AutoMetronome(_gameMetronome);
         GameInputs gameInputs;
         _app.ProcessInputsWhenInGameLoop(gameInputs);
-        this->_game->Update(gameInputs);
+        double tickDurationInSeconds = 1.0 / _gameMetronome.UpdatesPerSecond();
+        this->_game->Update(tickDurationInSeconds, gameInputs);
         Rendering::RenderGame();
     }
 

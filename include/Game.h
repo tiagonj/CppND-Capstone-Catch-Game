@@ -20,7 +20,7 @@ class Game
 
     void Resume();
     void Pause();
-    void Update(GameInputs &inputs);
+    void Update(double tickDurationInSeconds, GameInputs &inputs);
     bool IsPaused();
 
   private:
@@ -31,7 +31,7 @@ class Game
 
   private:
     bool _isPaused{true};
-    unsigned int _points{0};
+    uint32_t _points{0};
     std::unique_ptr<Catcher> _catcher;
 };
 

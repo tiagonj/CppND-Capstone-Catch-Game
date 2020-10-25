@@ -26,9 +26,11 @@ void Game::Pause()
     _isPaused = true;
 }
 
-void Game::Update(GameInputs &inputs)
+void Game::Update(double tickDurationInSeconds, GameInputs &inputs)
 {
     assert(!IsPaused());
+
+    _catcher->Update(tickDurationInSeconds, inputs.moveLeftIsPressed, inputs.moveRightIsPressed);
 
     for (unsigned int ii = 0; ii < 4294967295; ++ii)
     {
