@@ -10,6 +10,10 @@ OliveFactory::OliveFactory(std::weak_ptr<FallerQueue>& queue)
 {
 }
 
+OliveFactory::~OliveFactory()
+{
+}
+
 std::unique_ptr<Faller> OliveFactory::CreateFaller(float x, float vy)
 {
     return std::make_unique<Olive>(x, vy);

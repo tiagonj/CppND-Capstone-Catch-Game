@@ -15,9 +15,9 @@ struct ApplicationInputs
 enum ApplicationState
 {
     _kStartNewGame = 0,
-    _kPause,
-    _kPlay,
-    _kQuit
+    _kPauseGame,
+    _kPlayGame,
+    _kQuitApplication
 };
 
 class Application
@@ -41,7 +41,7 @@ class Application
   private:
     static Application _app; // Singleton application instance
 
-    std::shared_ptr<Game> _game;
+    std::unique_ptr<Game> _game;
     ApplicationState _nextState{ApplicationState::_kStartNewGame};
     Metronome _gameMetronome;
     Metronome _pauseMetronome;

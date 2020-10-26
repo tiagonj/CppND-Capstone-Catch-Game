@@ -10,10 +10,10 @@ class OliveFactory : public FallerFactory
 {
   public:
     OliveFactory(std::weak_ptr<FallerQueue>& queue);
+    ~OliveFactory();
 
   private:
     std::unique_ptr<Faller> CreateFaller(float x, float vy);
-    ~OliveFactory();
 
     OliveFactory() = delete;
     OliveFactory(OliveFactory&) = delete;

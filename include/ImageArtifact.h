@@ -19,8 +19,8 @@ class ImageArtifact
     ImageArtifact& operator=(ImageArtifact&&) = delete;
 
   private:
-    float _heightInPercent{-1.0};
-    float _widthInPercent{-1.0};
+    float _heightInPercent{0.0f};
+    float _widthInPercent{0.0f};
 };
 
 #endif

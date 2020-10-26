@@ -42,20 +42,20 @@ void Application::Run()
             case _kStartNewGame:
             {
                 _app.CreateNewGame();
-                _nextState = ApplicationState::_kPlay;
+                _nextState = ApplicationState::_kPlayGame;
                 break;
             }
-            case _kPause:
+            case _kPauseGame:
             {
                 _app.ExecutePauseLoop();
                 break;
             }
-            case _kPlay:
+            case _kPlayGame:
             {
                 _app.ExecuteGameLoop();
                 break;
             }
-            case _kQuit:
+            case _kQuitApplication:
             {
                 return;
             }
@@ -69,14 +69,14 @@ void Application::Run()
 
 void Application::CreateNewGame()
 {
-    _game = Game::CreateNewGame();
+    _game = std::make_unique<Game>();
 }
 
 void Application::ExecuteGameLoop()
 {
     _game->Resume();
 
-    while (_nextState == ApplicationState::_kPlay)
+    while (_nextState == ApplicationState::_kPlayGame)
     {
         auto autoMetronome = AutoMetronome(_gameMetronome);
         GameInputs gameInputs;
@@ -93,7 +93,7 @@ void Application::ExecutePauseLoop()
 {
     assert(_game->IsPaused());
 
-    while (_nextState == ApplicationState::_kPause)
+    while (_nextState == ApplicationState::_kPauseGame)
     {
         auto autoMetronome = AutoMetronome(_pauseMetronome);
         _app.ProcessInputsWhenInPauseLoop();
@@ -108,11 +108,11 @@ void Application::ProcessInputsWhenInGameLoop(GameInputs& gameInputs)
 
     if (appInputs.quitIsPressed)
     {
-        _nextState = ApplicationState::_kQuit;
+        _nextState = ApplicationState::_kQuitApplication;
     }
     else if (appInputs.pauseIsPressed)
     {
-        _nextState = ApplicationState::_kPause;
+        _nextState = ApplicationState::_kPauseGame;
     }
 }
 
@@ -124,11 +124,11 @@ void Application::ProcessInputsWhenInPauseLoop()
 
     if (appInputs.quitIsPressed)
     {
-        _nextState = ApplicationState::_kQuit;
+        _nextState = ApplicationState::_kQuitApplication;
     }
     else if (appInputs.pauseIsPressed)
     {
-        _nextState = ApplicationState::_kPlay;
+        _nextState = ApplicationState::_kPlayGame;
     }
 }
 

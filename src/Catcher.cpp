@@ -14,6 +14,7 @@ Catcher::Catcher()
       _halfWidthInPercent(0.05f),
       _velocityInPercentPerSecond(0.0)
 {
+    assert(_halfWidthInPercent < 0.5f);
 }
 
 Catcher::~Catcher()

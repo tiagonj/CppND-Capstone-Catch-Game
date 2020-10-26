@@ -6,7 +6,7 @@
 #include <iostream>
 
 #define DEFAULT_X_GRAVITY_IN_PERCENT_PER_SEC_SQUARED ((float)0.0f)
-#define DEFAULT_Y_GRAVITY_IN_PERCENT_PER_SEC_SQUARED ((float)0.01f)
+#define DEFAULT_Y_GRAVITY_IN_PERCENT_PER_SEC_SQUARED ((float)-0.1f)
 #define FALLER_ESCAPE_HEIGHT_THRESHOLD_PERCENT ((float)0.15f)
 #define FALLER_CAPTURE_WIDTH_THRESHOLD_PERCENT ((float)0.25f)
 
@@ -16,32 +16,28 @@ Game::Game()
       _xGravityInPercentPerSecondSquared(DEFAULT_X_GRAVITY_IN_PERCENT_PER_SEC_SQUARED),
       _yGravityInPercentPerSecondSquared(DEFAULT_Y_GRAVITY_IN_PERCENT_PER_SEC_SQUARED)
 {
+    assert(_yGravityInPercentPerSecondSquared < 0.0f);
+
     _catcher = std::make_unique<Catcher>();
     _fallerQueue = std::make_shared<FallerQueue>();
+    _generator = std::make_unique<FallerGenerator>(_fallerQueue);
 }
 
 Game::~Game()
 {
 }
 
-std::shared_ptr<Game> Game::CreateNewGame()
-{
-    std::shared_ptr<Game> game = std::make_shared<Game>();
-    game->SetMyselfWeakPtr(game);
-    return std::move(game); // RVO expected to occur here
-}
-
 void Game::Resume()
 {
     assert(IsPaused());
-    // TODO
+    _generator->Resume();
     _isPaused = false;
 }
 
 void Game::Pause()
 {
     assert(!IsPaused());
-    // TODO
+    _generator->Pause();
     _isPaused = true;
 }
 
@@ -76,24 +72,20 @@ void Game::Update(double tickDurationInSeconds, GameInputs& inputs)
         }
     }
 
-    for (unsigned int ii = 0; ii < 4294967295; ++ii)
+    for (unsigned int ii = 0; ii < 429496730; ++ii)
     {
         // Do nothing
         (void)inputs;
     }
 
     std::cout << "Finished updating game! tickDuration = " << tickDurationInSeconds
-              << ", updates/sec = " << (1.0 / tickDurationInSeconds) << "\n";
+              << ", updates/sec = " << (1.0 / tickDurationInSeconds) << " (points = " << _points
+              << ")\n";
 }
 
 bool Game::IsPaused()
 {
     return _isPaused;
-}
-
-void Game::SetMyselfWeakPtr(std::shared_ptr<Game>& me)
-{
-    _myself = me; // weak_ptr copy assignment
 }
 
 bool Game::HasFallerBeenCaught(std::unique_ptr<Faller>& f)

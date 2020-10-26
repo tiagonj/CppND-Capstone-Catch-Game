@@ -24,6 +24,10 @@ FallerFactory::FallerFactory(double generationProbabilty, uint32_t updatePeriodI
     _verticalVelocityEngine.seed(rd());
 }
 
+FallerFactory::~FallerFactory()
+{
+}
+
 void FallerFactory::Run()
 {
     while (!IsNextState(FallerFactoryState::_kTerminate))
@@ -50,21 +54,21 @@ void FallerFactory::Run()
 void FallerFactory::Pause()
 {
     std::lock_guard<std::mutex> lock(_nextStateMutex);
-    assert(IsNextState(FallerFactoryState::_kRun));
+    assert(FallerFactoryState::_kRun == _nextState);
     _nextState = FallerFactoryState::_kPause;
 }
 
 void FallerFactory::Resume()
 {
     std::lock_guard<std::mutex> lock(_nextStateMutex);
-    assert(IsNextState(FallerFactoryState::_kPause));
+    assert(FallerFactoryState::_kPause == _nextState);
     _nextState = FallerFactoryState::_kRun;
 }
 
 void FallerFactory::Terminate()
 {
     std::lock_guard<std::mutex> lock(_nextStateMutex);
-    assert(!IsNextState(FallerFactoryState::_kTerminate));
+    assert(FallerFactoryState::_kTerminate != _nextState);
     _nextState = FallerFactoryState::_kTerminate;
 }
 
