@@ -12,3 +12,4 @@ AllowShortFunctionsOnASingleLine: false
 AllowAllConstructorInitializersOnNextLine: false
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 NamespaceIndentation: All
+PointerAlignment: Left

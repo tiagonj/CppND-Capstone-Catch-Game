@@ -24,19 +24,19 @@ class Game
 
     void Resume();
     void Pause();
-    void Update(double tickDurationInSeconds, GameInputs &inputs);
+    void Update(double tickDurationInSeconds, GameInputs& inputs);
     bool IsPaused();
 
   private:
-    void SetMyselfWeakPtr(std::shared_ptr<Game> &me);
-    bool HasFallerBeenCaught(std::unique_ptr<Faller> &f);
-    bool HasFallerFallenBeyondCaptureRegion(std::unique_ptr<Faller> &f);
+    void SetMyselfWeakPtr(std::shared_ptr<Game>& me);
+    bool HasFallerBeenCaught(std::unique_ptr<Faller>& f);
+    bool HasFallerFallenBeyondCaptureRegion(std::unique_ptr<Faller>& f);
     bool IsBetween(float position, float left, float right);
 
-    Game(Game &) = delete;
-    Game(Game &&) = delete;
-    Game &operator=(Game &) = delete;
-    Game &operator=(Game &&) = delete;
+    Game(Game&) = delete;
+    Game(Game&&) = delete;
+    Game& operator=(Game&) = delete;
+    Game& operator=(Game&&) = delete;
 
   private:
     std::weak_ptr<Game> _myself;

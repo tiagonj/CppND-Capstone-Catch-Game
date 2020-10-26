@@ -17,7 +17,7 @@ void Faller::Update(double timeDeltaInSeconds, float xAccelInPercentPerSecSquare
                     yAccelInPercentPerSecSquared);
 }
 
-ImageArtifact &Faller::GetImageArtifact() const
+ImageArtifact& Faller::GetImageArtifact() const
 {
     return *_img;
 }
@@ -47,7 +47,7 @@ uint32_t Faller::RewardPoints() const
     return _rewardPoints;
 }
 
-Faller::Faller(std::shared_ptr<ImageArtifact> &img, float x, float vx, float vy,
+Faller::Faller(std::shared_ptr<ImageArtifact>& img, float x, float vx, float vy,
                uint32_t rewardPoints)
     : _xPositionInPercent(x),
       _yPositionInPercent(UP_LIMIT_POSITION_IN_PERCENT - img->HalfHeightInPercent()),
@@ -58,7 +58,7 @@ Faller::Faller(std::shared_ptr<ImageArtifact> &img, float x, float vx, float vy,
 {
 }
 
-void Faller::UpdatePosAndVel(double timeDeltaInSeconds, float &pos, float &vel, float accel)
+void Faller::UpdatePosAndVel(double timeDeltaInSeconds, float& pos, float& vel, float accel)
 {
     double timeDeltaSquared = std::pow(timeDeltaInSeconds, 2.0);
     pos = pos + (vel * timeDeltaInSeconds) + (0.5 * accel * timeDeltaSquared);
@@ -107,8 +107,8 @@ void Faller::UpdateXPosAndVel(double timeDeltaInSeconds, float accel)
     }
 }
 
-void Faller::SolveQuadraticEq(float a, float b, float c, float &smallestSolution,
-                              float &largestSolution)
+void Faller::SolveQuadraticEq(float a, float b, float c, float& smallestSolution,
+                              float& largestSolution)
 {
     // We're expecting real solutions only
     float discriminant = std::pow(b, 2.0f) - (4.0f * a * c);

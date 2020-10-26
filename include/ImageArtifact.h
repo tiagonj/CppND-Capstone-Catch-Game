@@ -12,10 +12,10 @@ class ImageArtifact
     float HalfWidthInPercent();
 
   private:
-    ImageArtifact(ImageArtifact &) = delete;
-    ImageArtifact(ImageArtifact &&) = delete;
-    ImageArtifact &operator=(ImageArtifact &) = delete;
-    ImageArtifact &operator=(ImageArtifact &&) = delete;
+    ImageArtifact(ImageArtifact&) = delete;
+    ImageArtifact(ImageArtifact&&) = delete;
+    ImageArtifact& operator=(ImageArtifact&) = delete;
+    ImageArtifact& operator=(ImageArtifact&&) = delete;
 
   private:
     float _heightInPercent{-1.0};

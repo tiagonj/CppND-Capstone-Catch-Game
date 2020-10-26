@@ -13,10 +13,10 @@ class Olive : public Faller
 
   private:
     Olive() = delete;
-    Olive(Olive &) = delete;
-    Olive(Olive &&) = delete;
-    Olive &operator=(Olive &) = delete;
-    Olive &operator=(Olive &&) = delete;
+    Olive(Olive&) = delete;
+    Olive(Olive&&) = delete;
+    Olive& operator=(Olive&) = delete;
+    Olive& operator=(Olive&&) = delete;
 
   private:
     static std::shared_ptr<ImageArtifact> _oliveImg;

@@ -1,6 +1,6 @@
 #include "InputReader.h"
 
-void InputReader::ReadInputs(ApplicationInputs &appInputs, GameInputs &gameInputs)
+void InputReader::ReadInputs(ApplicationInputs& appInputs, GameInputs& gameInputs)
 {
     // TODO
     appInputs.pauseIsPressed = false;

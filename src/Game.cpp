@@ -44,7 +44,7 @@ void Game::Pause()
     _isPaused = true;
 }
 
-void Game::Update(double tickDurationInSeconds, GameInputs &inputs)
+void Game::Update(double tickDurationInSeconds, GameInputs& inputs)
 {
     assert(!IsPaused());
 
@@ -87,12 +87,12 @@ bool Game::IsPaused()
     return _isPaused;
 }
 
-void Game::SetMyselfWeakPtr(std::shared_ptr<Game> &me)
+void Game::SetMyselfWeakPtr(std::shared_ptr<Game>& me)
 {
     _myself = me; // weak_ptr copy assignment
 }
 
-bool Game::HasFallerBeenCaught(std::unique_ptr<Faller> &f)
+bool Game::HasFallerBeenCaught(std::unique_ptr<Faller>& f)
 {
     if ((f->DownPositionInPercent() <= DOWN_LIMIT_POSITION_IN_PERCENT) &&
         !HasFallerFallenBeyondCaptureRegion(f))
@@ -132,7 +132,7 @@ bool Game::HasFallerBeenCaught(std::unique_ptr<Faller> &f)
     return false;
 }
 
-bool Game::HasFallerFallenBeyondCaptureRegion(std::unique_ptr<Faller> &f)
+bool Game::HasFallerFallenBeyondCaptureRegion(std::unique_ptr<Faller>& f)
 {
     float upPos = f->UpPositionInPercent();
     float dnPos = f->DownPositionInPercent();

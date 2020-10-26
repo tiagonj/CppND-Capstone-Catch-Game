@@ -30,7 +30,7 @@ time_value_t Metronome::StartMeasurement()
     return std::chrono::system_clock::now();
 }
 
-void Metronome::StopMeasurementAndSleepIfApplicable(time_value_t &startTime)
+void Metronome::StopMeasurementAndSleepIfApplicable(time_value_t& startTime)
 {
     auto endTime = std::chrono::system_clock::now();
 
@@ -96,7 +96,7 @@ void Metronome::AdjustInternals(uint32_t executionDurationInUs)
     }
 }
 
-AutoMetronome::AutoMetronome(Metronome &m) : _metronome(m)
+AutoMetronome::AutoMetronome(Metronome& m) : _metronome(m)
 {
     _startTime = _metronome.StartMeasurement();
 }

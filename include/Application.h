@@ -35,7 +35,7 @@ class Application
     void CreateNewGame();
     void ExecuteGameLoop();
     void ExecutePauseLoop();
-    void ProcessInputsWhenInGameLoop(GameInputs &gameInputs);
+    void ProcessInputsWhenInGameLoop(GameInputs& gameInputs);
     void ProcessInputsWhenInPauseLoop();
 
   private:

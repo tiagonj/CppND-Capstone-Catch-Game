@@ -18,14 +18,14 @@ class Metronome
     ~Metronome();
 
     time_value_t StartMeasurement();
-    void StopMeasurementAndSleepIfApplicable(time_value_t &startTime);
+    void StopMeasurementAndSleepIfApplicable(time_value_t& startTime);
     uint32_t UpdatesPerSecond();
 
   private:
-    Metronome(Metronome &) = delete;
-    Metronome(Metronome &&) = delete;
-    Metronome &operator=(Metronome &) = delete;
-    Metronome &operator=(Metronome &&) = delete;
+    Metronome(Metronome&) = delete;
+    Metronome(Metronome&&) = delete;
+    Metronome& operator=(Metronome&) = delete;
+    Metronome& operator=(Metronome&&) = delete;
 
     long TargetDurationInUs();
     void AdjustInternals(uint32_t executionDurationInUs);
@@ -43,18 +43,18 @@ class Metronome
 class AutoMetronome
 {
   public:
-    AutoMetronome(Metronome &m);
+    AutoMetronome(Metronome& m);
     ~AutoMetronome();
 
   private:
     AutoMetronome() = delete;
-    AutoMetronome(AutoMetronome &) = delete;
-    AutoMetronome(AutoMetronome &&) = delete;
-    AutoMetronome &operator=(AutoMetronome &) = delete;
-    AutoMetronome &operator=(AutoMetronome &&) = delete;
+    AutoMetronome(AutoMetronome&) = delete;
+    AutoMetronome(AutoMetronome&&) = delete;
+    AutoMetronome& operator=(AutoMetronome&) = delete;
+    AutoMetronome& operator=(AutoMetronome&&) = delete;
 
   private:
-    Metronome &_metronome;
+    Metronome& _metronome;
     time_value_t _startTime;
 };
 

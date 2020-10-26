@@ -21,10 +21,10 @@ class Catcher
     float RightEdgePosition();
 
   private:
-    Catcher(Catcher &) = delete;
-    Catcher(Catcher &&) = delete;
-    Catcher &operator=(Catcher &) = delete;
-    Catcher &operator=(Catcher &&) = delete;
+    Catcher(Catcher&) = delete;
+    Catcher(Catcher&&) = delete;
+    Catcher& operator=(Catcher&) = delete;
+    Catcher& operator=(Catcher&&) = delete;
 
     MoveDirection GetRequestedMoveDirection(bool moveLeft, bool moveRight);
     double GetVelocityDelta(double tickDurationInSeconds, MoveDirection requestedDirection);

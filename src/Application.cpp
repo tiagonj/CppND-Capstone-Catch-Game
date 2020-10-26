@@ -101,7 +101,7 @@ void Application::ExecutePauseLoop()
     }
 }
 
-void Application::ProcessInputsWhenInGameLoop(GameInputs &gameInputs)
+void Application::ProcessInputsWhenInGameLoop(GameInputs& gameInputs)
 {
     ApplicationInputs appInputs;
     InputReader::ReadInputs(appInputs, gameInputs);
