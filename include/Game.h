@@ -3,6 +3,7 @@
 
 #include "Catcher.h"
 #include "Faller.h"
+#include "FallerQueue.h"
 
 #include <cstdint>
 #include <list>
@@ -27,10 +28,8 @@ class Game
     void Pause();
     void Update(double tickDurationInSeconds, GameInputs& inputs);
     bool IsPaused();
-    void StageFaller(std::unique_ptr<Faller>&& f);
 
   private:
-    void AcceptStagedFallers();
     void SetMyselfWeakPtr(std::shared_ptr<Game>& me);
     bool HasFallerBeenCaught(std::unique_ptr<Faller>& f);
     bool HasFallerFallenBeyondCaptureRegion(std::unique_ptr<Faller>& f);
@@ -46,9 +45,8 @@ class Game
     bool _isPaused{true};
     uint32_t _points{0};
     std::unique_ptr<Catcher> _catcher;
+    std::shared_ptr<FallerQueue> _fallerQueue;
     std::list<std::unique_ptr<Faller>> _fallers;
-    std::list<std::unique_ptr<Faller>> _stagedFallers;
-    std::mutex _stagedFallersMutex;
     float _xGravityInPercentPerSecondSquared{0.0f};
     float _yGravityInPercentPerSecondSquared{0.0f};
 };
