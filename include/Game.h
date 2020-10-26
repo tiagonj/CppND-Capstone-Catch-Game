@@ -5,8 +5,8 @@
 #include "Faller.h"
 
 #include <cstdint>
+#include <list>
 #include <memory>
-#include <vector>
 
 struct GameInputs
 {
@@ -43,7 +43,7 @@ class Game
     bool _isPaused{true};
     uint32_t _points{0};
     std::unique_ptr<Catcher> _catcher;
-    std::vector<std::unique_ptr<Faller>> _fallers;
+    std::list<std::unique_ptr<Faller>> _fallers;
     float _xGravityInPercentPerSecondSquared{0.0f};
     float _yGravityInPercentPerSecondSquared{0.0f};
 };
