@@ -51,6 +51,9 @@ void Game::Update(double tickDurationInSeconds, GameInputs& inputs)
     // Update position and velocity of the catcher
     _catcher->Update(tickDurationInSeconds, inputs.moveLeftIsPressed, inputs.moveRightIsPressed);
 
+    // Accept any fallers that have been staged since the last execution
+    AcceptStagedFallers();
+
     for (auto it = _fallers.begin(); it != _fallers.end();)
     {
         // Update position and velocity of each faller object
@@ -85,6 +88,23 @@ void Game::Update(double tickDurationInSeconds, GameInputs& inputs)
 bool Game::IsPaused()
 {
     return _isPaused;
+}
+
+void Game::StageFaller(std::unique_ptr<Faller>&& f)
+{
+    std::lock_guard<std::mutex> lock(_stagedFallersMutex);
+    _stagedFallers.emplace_back(std::move(f));
+}
+
+void Game::AcceptStagedFallers()
+{
+    std::lock_guard<std::mutex> lock(_stagedFallersMutex);
+
+    for (auto it = _stagedFallers.begin(); it != _stagedFallers.end();)
+    {
+        _fallers.emplace_back(std::move(*it));
+        it = _stagedFallers.erase(it);
+    }
 }
 
 void Game::SetMyselfWeakPtr(std::shared_ptr<Game>& me)
