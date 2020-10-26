@@ -20,12 +20,15 @@ class Game
     Game();
     ~Game();
 
+    static std::shared_ptr<Game> CreateNewGame();
+
     void Resume();
     void Pause();
     void Update(double tickDurationInSeconds, GameInputs &inputs);
     bool IsPaused();
 
   private:
+    void SetMyselfWeakPtr(std::shared_ptr<Game> &me);
     bool HasFallerBeenCaught(std::unique_ptr<Faller> &f);
     bool HasFallerFallenBeyondCaptureRegion(std::unique_ptr<Faller> &f);
     bool IsBetween(float position, float left, float right);
@@ -36,6 +39,7 @@ class Game
     Game &operator=(Game &&) = delete;
 
   private:
+    std::weak_ptr<Game> _myself;
     bool _isPaused{true};
     uint32_t _points{0};
     std::unique_ptr<Catcher> _catcher;

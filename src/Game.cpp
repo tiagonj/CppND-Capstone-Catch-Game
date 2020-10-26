@@ -11,7 +11,7 @@
 #define FALLER_CAPTURE_WIDTH_THRESHOLD_PERCENT ((float)0.25f)
 
 Game::Game()
-    : _isPaused(true),
+    : _isPaused(true), // The game is purposely created in paused state
       _points(0),
       _xGravityInPercentPerSecondSquared(DEFAULT_X_GRAVITY_IN_PERCENT_PER_SEC_SQUARED),
       _yGravityInPercentPerSecondSquared(DEFAULT_Y_GRAVITY_IN_PERCENT_PER_SEC_SQUARED)
@@ -21,6 +21,13 @@ Game::Game()
 
 Game::~Game()
 {
+}
+
+std::shared_ptr<Game> Game::CreateNewGame()
+{
+    std::shared_ptr<Game> game = std::make_shared<Game>();
+    game->SetMyselfWeakPtr(game);
+    return std::move(game); // RVO expected to occur here
 }
 
 void Game::Resume()
@@ -78,6 +85,11 @@ void Game::Update(double tickDurationInSeconds, GameInputs &inputs)
 bool Game::IsPaused()
 {
     return _isPaused;
+}
+
+void Game::SetMyselfWeakPtr(std::shared_ptr<Game> &me)
+{
+    _myself = me; // weak_ptr copy assignment
 }
 
 bool Game::HasFallerBeenCaught(std::unique_ptr<Faller> &f)

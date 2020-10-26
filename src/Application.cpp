@@ -69,7 +69,7 @@ void Application::Run()
 
 void Application::CreateNewGame()
 {
-    _game = std::make_unique<Game>();
+    _game = Game::CreateNewGame();
 }
 
 void Application::ExecuteGameLoop()
