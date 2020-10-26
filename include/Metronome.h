@@ -22,6 +22,7 @@ class Metronome
     uint32_t UpdatesPerSecond();
 
   private:
+    Metronome() = delete;
     Metronome(Metronome&) = delete;
     Metronome(Metronome&&) = delete;
     Metronome& operator=(Metronome&) = delete;

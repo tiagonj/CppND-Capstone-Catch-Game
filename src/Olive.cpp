@@ -11,3 +11,7 @@ Olive::Olive(float x, float vy)
     : Faller(_oliveImg, x, OLIVE_HORIZONTAL_VELOCITY, vy, OLIVE_REWARD_POINTS)
 {
 }
+
+Olive::~Olive()
+{
+}

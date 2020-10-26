@@ -56,6 +56,15 @@ Faller::Faller(std::shared_ptr<ImageArtifact>& img, float x, float vx, float vy,
       _rewardPoints(rewardPoints),
       _img(img) // Copy constructor => share ownership of the image artifact
 {
+    assert(_xPositionInPercent >= 0.0);
+    assert(_xPositionInPercent <= 1.0);
+
+    float halfWidthInPercent = _img->HalfWidthInPercent();
+    float lowerLimit = LEFT_LIMIT_POSITION_IN_PERCENT + halfWidthInPercent;
+    float upperLimit = RIGHT_LIMIT_POSITION_IN_PERCENT - halfWidthInPercent;
+
+    _xPositionInPercent = std::max(_xPositionInPercent, lowerLimit);
+    _xPositionInPercent = std::min(_xPositionInPercent, upperLimit);
 }
 
 void Faller::UpdatePosAndVel(double timeDeltaInSeconds, float& pos, float& vel, float accel)
