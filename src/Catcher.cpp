@@ -68,8 +68,15 @@ double Catcher::GetVelocityDelta(double tickDurationInSeconds, MoveDirection req
 
     if (requestedDirection == MoveDirection::_kNoMovement)
     {
-        // Velocity delta opposes current velocity (can be zero, this is allowed)
-        return std::copysign(velocityDeltaMagnitude, -1.0f * _velocityInPercentPerSecond);
+        if (0.0f == _velocityInPercentPerSecond)
+        {
+            return 0.0;
+        }
+        else
+        {
+            // Velocity delta opposes current velocity
+            return std::copysign(velocityDeltaMagnitude, -1.0f * _velocityInPercentPerSecond);
+        }
     }
     else
     {
