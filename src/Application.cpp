@@ -1,6 +1,6 @@
 #include "Application.h"
 #include "InputReader.h"
-#include "Rendering.h"
+#include "Renderer.h"
 
 #include <cassert>
 #include <iostream>
@@ -30,7 +30,7 @@ void Application::Launch()
 
 void Application::Initialise()
 {
-    Rendering::Initialise();
+    Renderer::Initialise();
 }
 
 void Application::Run()
@@ -83,7 +83,7 @@ void Application::ExecuteGameLoop()
         _app.ProcessInputsWhenInGameLoop(gameInputs);
         double tickDurationInSeconds = 1.0 / _gameMetronome.UpdatesPerSecond();
         this->_game->Update(tickDurationInSeconds, gameInputs);
-        Rendering::RenderGame();
+        Renderer::RenderGame();
     }
 
     _game->Pause();
