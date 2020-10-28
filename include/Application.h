@@ -33,14 +33,15 @@ class Application
     void Run();
 
     void CreateNewGame();
-    void ExecuteGameLoop(Renderer& renderer);
-    void ExecutePauseLoop(Renderer& renderer);
+    void ExecuteGameLoop();
+    void ExecutePauseLoop();
     void ProcessInputsWhenInGameLoop(GameInputs& gameInputs);
     void ProcessInputsWhenInPauseLoop();
 
   private:
     static Application _app; // Singleton application instance
 
+    std::unique_ptr<Renderer> _renderer;
     std::unique_ptr<Game> _game;
     ApplicationState _nextState{ApplicationState::_kStartNewGame};
     Metronome _gameMetronome;

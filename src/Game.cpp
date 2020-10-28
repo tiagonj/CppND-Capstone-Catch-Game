@@ -97,6 +97,13 @@ float Game::CatcherRightEdgePositionInPercent() const
     return _catcher->RightEdgePosition();
 }
 
+std::vector<const Faller*> Game::GetAllFallers() const
+{
+    std::vector<const Faller*> v;
+    std::for_each(_fallers.begin(), _fallers.end(), [&v](auto& ptr) { v.emplace_back(ptr.get()); });
+    return v;
+}
+
 bool Game::HasFallerBeenCaught(std::unique_ptr<Faller>& f)
 {
     if ((f->DownPosition() <= DOWN_LIMIT_POSITION) && !HasFallerFallenBeyondCaptureRegion(f))

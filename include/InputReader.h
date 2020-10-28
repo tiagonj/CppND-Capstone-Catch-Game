@@ -6,7 +6,7 @@
 
 namespace InputReader
 {
-    void ReadInputs(ApplicationInputs& appInputs, GameInputs& gameInputs);
+    void ReadInputs(ApplicationInputs& appInputs, GameInputs& gameInputs, Renderer& renderer);
 };
 
 #endif

@@ -1,8 +1,10 @@
 #include "InputReader.h"
+#include "Renderer.h"
 
 #include "SDL.h"
 
-void InputReader::ReadInputs(ApplicationInputs& appInputs, GameInputs& gameInputs)
+void InputReader::ReadInputs(ApplicationInputs& appInputs, GameInputs& gameInputs,
+                             Renderer& renderer)
 {
     // Reset inputs
     appInputs.pauseIsPressed = false;
@@ -17,13 +19,20 @@ void InputReader::ReadInputs(ApplicationInputs& appInputs, GameInputs& gameInput
     gameInputs.moveLeftIsPressed = (1 == state[SDL_SCANCODE_LEFT]);
     gameInputs.moveRightIsPressed = (1 == state[SDL_SCANCODE_RIGHT]);
 
-    // Poll for any available SDL events
+    // Cycle through all available SDL events
     SDL_Event ev;
     while (SDL_PollEvent(&ev))
     {
         if (ev.type == SDL_QUIT)
         {
             appInputs.quitIsPressed = true;
+        }
+        else if (ev.type == SDL_WINDOWEVENT)
+        {
+            if (ev.window.event == SDL_WINDOWEVENT_SIZE_CHANGED)
+            {
+                renderer.WindowSizeChanged(ev.window.data1, ev.window.data2);
+            }
         }
         else if (ev.type == SDL_KEYDOWN)
         {

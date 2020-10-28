@@ -25,7 +25,12 @@ class Renderer
     void RefreshWindowTitle(const uint32_t points, const uint32_t nrOfFallers,
                             const uint32_t framesPerSecond, const bool isPaused);
 
+    void WindowSizeChanged(int newWidth, int newHeight);
+
   private:
+    void RenderCatcher(const Game& game, const int catcherRegionHeight);
+    void RenderFallers(const Game& game, const int fallersRegionHeight);
+
     void SetRenderColour(const Colour c);
     void SetRenderColour(const Colour c, const Uint8 alpha);
 

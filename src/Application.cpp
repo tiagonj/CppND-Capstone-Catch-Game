@@ -35,7 +35,8 @@ void Application::Launch()
 
 void Application::Run()
 {
-    Renderer renderer("Catch!", APPLICATION_WINDOW_WIDTH, APPLICATION_WINDOW_HEIGHT);
+    _renderer =
+        std::make_unique<Renderer>("Catch!", APPLICATION_WINDOW_WIDTH, APPLICATION_WINDOW_HEIGHT);
 
     while (true)
     {
@@ -49,12 +50,12 @@ void Application::Run()
             }
             case _kPauseGame:
             {
-                ExecutePauseLoop(renderer);
+                ExecutePauseLoop();
                 break;
             }
             case _kPlayGame:
             {
-                ExecuteGameLoop(renderer);
+                ExecuteGameLoop();
                 break;
             }
             case _kQuitApplication:
@@ -74,7 +75,7 @@ void Application::CreateNewGame()
     _game = std::make_unique<Game>();
 }
 
-void Application::ExecuteGameLoop(Renderer& renderer)
+void Application::ExecuteGameLoop()
 {
     _game->Resume();
 
@@ -85,13 +86,13 @@ void Application::ExecuteGameLoop(Renderer& renderer)
         ProcessInputsWhenInGameLoop(gameInputs);
         double tickDurationInSeconds = 1.0 / _gameMetronome.UpdatesPerSecond();
         this->_game->Update(tickDurationInSeconds, gameInputs);
-        renderer.RenderGame(*_game.get(), _gameMetronome.UpdatesPerSecond());
+        _renderer->RenderGame(*_game.get(), _gameMetronome.UpdatesPerSecond());
     }
 
     _game->Pause();
 }
 
-void Application::ExecutePauseLoop(Renderer& renderer)
+void Application::ExecutePauseLoop()
 {
     assert(_game->IsPaused());
 
@@ -99,14 +100,14 @@ void Application::ExecutePauseLoop(Renderer& renderer)
     {
         auto autoMetronome = AutoMetronome(_pauseMetronome);
         ProcessInputsWhenInPauseLoop();
-        renderer.RenderGame(*_game.get(), _gameMetronome.UpdatesPerSecond());
+        _renderer->RenderGame(*_game.get(), _gameMetronome.UpdatesPerSecond());
     }
 }
 
 void Application::ProcessInputsWhenInGameLoop(GameInputs& gameInputs)
 {
     ApplicationInputs appInputs;
-    InputReader::ReadInputs(appInputs, gameInputs);
+    InputReader::ReadInputs(appInputs, gameInputs, *_renderer.get());
 
     if (appInputs.quitIsPressed)
     {
@@ -122,7 +123,7 @@ void Application::ProcessInputsWhenInPauseLoop()
 {
     ApplicationInputs appInputs;
     GameInputs gameInputsIgnored;
-    InputReader::ReadInputs(appInputs, gameInputsIgnored);
+    InputReader::ReadInputs(appInputs, gameInputsIgnored, *_renderer.get());
 
     if (appInputs.quitIsPressed)
     {
