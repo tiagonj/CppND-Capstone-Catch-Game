@@ -8,13 +8,13 @@ Faller::~Faller()
 {
 }
 
-void Faller::Update(double timeDeltaInSeconds, float xAccelInPercentPerSecSquared,
-                    float yAccelInPercentPerSecSquared)
+void Faller::Update(double timeDeltaInSeconds, float xAccelInUnitsPerSecSquared,
+                    float yAccelInUnitsPerSecSquared)
 {
-    UpdateXPosAndVel(timeDeltaInSeconds, xAccelInPercentPerSecSquared);
+    UpdateXPosAndVel(timeDeltaInSeconds, xAccelInUnitsPerSecSquared);
 
-    UpdatePosAndVel(timeDeltaInSeconds, _yPositionInPercent, _yVelocityInPercentPerSecond,
-                    yAccelInPercentPerSecSquared);
+    UpdatePosAndVel(timeDeltaInSeconds, _yPosition, _yVelocityInUnitsPerSecond,
+                    yAccelInUnitsPerSecSquared);
 }
 
 ImageArtifact& Faller::GetImageArtifact() const
@@ -22,24 +22,24 @@ ImageArtifact& Faller::GetImageArtifact() const
     return *_img;
 }
 
-float Faller::UpPositionInPercent() const
+float Faller::UpPosition() const
 {
-    return _yPositionInPercent + _img->HalfHeightInPercent();
+    return _yPosition + _img->HalfHeightInPercent();
 }
 
-float Faller::DownPositionInPercent() const
+float Faller::DownPosition() const
 {
-    return _yPositionInPercent - _img->HalfHeightInPercent();
+    return _yPosition - _img->HalfHeightInPercent();
 }
 
-float Faller::LeftPositionInPercent() const
+float Faller::LeftPosition() const
 {
-    return _xPositionInPercent - _img->HalfWidthInPercent();
+    return _xPosition - _img->HalfWidthInPercent();
 }
 
-float Faller::RightPositionInPercent() const
+float Faller::RightPosition() const
 {
-    return _xPositionInPercent + _img->HalfWidthInPercent();
+    return _xPosition + _img->HalfWidthInPercent();
 }
 
 uint32_t Faller::RewardPoints() const
@@ -49,22 +49,22 @@ uint32_t Faller::RewardPoints() const
 
 Faller::Faller(std::shared_ptr<ImageArtifact>& img, float x, float vx, float vy,
                uint32_t rewardPoints)
-    : _xPositionInPercent(x),
-      _yPositionInPercent(UP_LIMIT_POSITION_IN_PERCENT - img->HalfHeightInPercent()),
-      _xVelocityInPercentPerSecond(vx),
-      _yVelocityInPercentPerSecond(vy),
+    : _xPosition(x),
+      _yPosition(UP_LIMIT_POSITION - img->HalfHeightInPercent()),
+      _xVelocityInUnitsPerSecond(vx),
+      _yVelocityInUnitsPerSecond(vy),
       _rewardPoints(rewardPoints),
       _img(img) // Copy constructor => share ownership of the image artifact
 {
-    assert(_xPositionInPercent >= 0.0);
-    assert(_xPositionInPercent <= 1.0);
+    assert(_xPosition >= 0.0);
+    assert(_xPosition <= 1.0);
 
     float halfWidthInPercent = _img->HalfWidthInPercent();
-    float lowerLimit = LEFT_LIMIT_POSITION_IN_PERCENT + halfWidthInPercent;
-    float upperLimit = RIGHT_LIMIT_POSITION_IN_PERCENT - halfWidthInPercent;
+    float lowerLimit = LEFT_LIMIT_POSITION + halfWidthInPercent;
+    float upperLimit = RIGHT_LIMIT_POSITION - halfWidthInPercent;
 
-    _xPositionInPercent = std::max(_xPositionInPercent, lowerLimit);
-    _xPositionInPercent = std::min(_xPositionInPercent, upperLimit);
+    _xPosition = std::max(_xPosition, lowerLimit);
+    _xPosition = std::min(_xPosition, upperLimit);
 }
 
 void Faller::UpdatePosAndVel(double timeDeltaInSeconds, float& pos, float& vel, float accel)
@@ -76,27 +76,26 @@ void Faller::UpdatePosAndVel(double timeDeltaInSeconds, float& pos, float& vel, 
 
 void Faller::UpdateXPosAndVel(double timeDeltaInSeconds, float accel)
 {
-    float _xPrevPosition = _xPositionInPercent;
-    float _xPrevVelocity = _xVelocityInPercentPerSecond;
+    float _xPrevPosition = _xPosition;
+    float _xPrevVelocity = _xVelocityInUnitsPerSecond;
 
-    UpdatePosAndVel(timeDeltaInSeconds, _xPositionInPercent, _xVelocityInPercentPerSecond, accel);
+    UpdatePosAndVel(timeDeltaInSeconds, _xPosition, _xVelocityInUnitsPerSecond, accel);
 
-    bool exceedsLeftLimitPos = (_xPositionInPercent < LEFT_LIMIT_POSITION_IN_PERCENT);
-    bool exceedsRightLimitPos = (_xPositionInPercent > RIGHT_LIMIT_POSITION_IN_PERCENT);
+    bool exceedsLeftLimitPos = (_xPosition < LEFT_LIMIT_POSITION);
+    bool exceedsRightLimitPos = (_xPosition > RIGHT_LIMIT_POSITION);
 
     if (exceedsLeftLimitPos || exceedsRightLimitPos)
     {
         // Revert
-        _xPositionInPercent = _xPrevPosition;
-        _xVelocityInPercentPerSecond = _xPrevVelocity;
+        _xPosition = _xPrevPosition;
+        _xVelocityInUnitsPerSecond = _xPrevVelocity;
 
-        float limitPos =
-            exceedsLeftLimitPos ? LEFT_LIMIT_POSITION_IN_PERCENT : RIGHT_LIMIT_POSITION_IN_PERCENT;
+        float limitPos = exceedsLeftLimitPos ? LEFT_LIMIT_POSITION : RIGHT_LIMIT_POSITION;
 
         // Solve quadratic equation: at which point in time is the limit position reached?
         float a = accel / 2.0f;
-        float b = _xVelocityInPercentPerSecond;
-        float c = _xPositionInPercent - limitPos;
+        float b = _xVelocityInUnitsPerSecond;
+        float c = _xPosition - limitPos;
         float smallest;
         float largest;
         SolveQuadraticEq(a, b, c, smallest, largest);
@@ -107,8 +106,8 @@ void Faller::UpdateXPosAndVel(double timeDeltaInSeconds, float accel)
         float remainingTime = timeDeltaInSeconds - t;
 
         // Jump to the intermediate solution
-        _xPositionInPercent = limitPos;
-        _xVelocityInPercentPerSecond *= -1.0f;
+        _xPosition = limitPos;
+        _xVelocityInUnitsPerSecond *= -1.0f;
 
         // Re-enter to calculate remaining solution (Note: because of the const accel and quadratic
         // nature of the motion equation we are guaranteed only do have to do this at most once

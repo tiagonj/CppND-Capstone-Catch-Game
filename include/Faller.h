@@ -11,13 +11,13 @@ class Faller
 {
   public:
     ~Faller();
-    virtual void Update(double timeDeltaInSeconds, float xAccelInPercentPerSecSquared,
-                        float yAccelInPercentPerSecSquared); // Default update (can be overriden)
+    virtual void Update(double timeDeltaInSeconds, float xAccelInUnitsPerSecSquared,
+                        float yAccelInUnitsPerSecSquared); // Default update (can be overriden)
     ImageArtifact& GetImageArtifact() const;
-    float UpPositionInPercent() const;
-    float DownPositionInPercent() const;
-    float LeftPositionInPercent() const;
-    float RightPositionInPercent() const;
+    float UpPosition() const;
+    float DownPosition() const;
+    float LeftPosition() const;
+    float RightPosition() const;
     uint32_t RewardPoints() const;
 
   protected:
@@ -35,10 +35,10 @@ class Faller
     Faller& operator=(Faller&&) = delete;
 
   protected:
-    float _xPositionInPercent;
-    float _yPositionInPercent;
-    float _xVelocityInPercentPerSecond;
-    float _yVelocityInPercentPerSecond;
+    float _xPosition; // Note: positions are in normalised units (0.0 ~ 1.0)
+    float _yPosition;
+    float _xVelocityInUnitsPerSecond;
+    float _yVelocityInUnitsPerSecond;
     uint32_t _rewardPoints;
 
   private:

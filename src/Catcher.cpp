@@ -4,17 +4,14 @@
 #include <cassert>
 #include <cmath>
 
-#define MAX_VELOCITY_IN_PERCENT_PER_SEC ((double)0.6)
+#define MAX_VELOCITY_IN_UNITS_PER_SEC ((double)0.6)
 #define ACCEL_RAMP_DURATION_IN_SECONDS ((double)0.35)
-#define ACCEL_SETPOINT_IN_PERCENT_PER_SEC_SQUARED                                                  \
-    (MAX_VELOCITY_IN_PERCENT_PER_SEC / ACCEL_RAMP_DURATION_IN_SECONDS)
+#define ACCEL_SETPOINT_IN_UNITS_PER_SEC_SQUARED                                                    \
+    (MAX_VELOCITY_IN_UNITS_PER_SEC / ACCEL_RAMP_DURATION_IN_SECONDS)
 
-Catcher::Catcher()
-    : _positionInPercent(0.5f),
-      _halfWidthInPercent(0.05f),
-      _velocityInPercentPerSecond(0.0)
+Catcher::Catcher() : _centrePosition(0.5f), _halfWidth(0.05f), _velocityInUnitsPerSecond(0.0)
 {
-    assert(_halfWidthInPercent < 0.5f);
+    assert(_halfWidth < 0.5f);
 }
 
 Catcher::~Catcher()
@@ -34,12 +31,12 @@ void Catcher::Update(double tickDurationInSeconds, bool moveLeft, bool moveRight
 
 float Catcher::LeftEdgePosition()
 {
-    return LeftEdgeForPosition(_positionInPercent);
+    return LeftEdgeForCentrePosition(_centrePosition);
 }
 
 float Catcher::RightEdgePosition()
 {
-    return RightEdgeForPosition(_positionInPercent);
+    return RightEdgeForCentrePosition(_centrePosition);
 }
 
 MoveDirection Catcher::GetRequestedMoveDirection(bool moveLeft, bool moveRight)
@@ -63,19 +60,18 @@ MoveDirection Catcher::GetRequestedMoveDirection(bool moveLeft, bool moveRight)
 
 double Catcher::GetVelocityDelta(double tickDurationInSeconds, MoveDirection requestedDirection)
 {
-    double velocityDeltaMagnitude =
-        tickDurationInSeconds * ACCEL_SETPOINT_IN_PERCENT_PER_SEC_SQUARED;
+    double velocityDeltaMagnitude = tickDurationInSeconds * ACCEL_SETPOINT_IN_UNITS_PER_SEC_SQUARED;
 
     if (requestedDirection == MoveDirection::_kNoMovement)
     {
-        if (0.0f == _velocityInPercentPerSecond)
+        if (0.0f == _velocityInUnitsPerSecond)
         {
             return 0.0;
         }
         else
         {
             // Velocity delta opposes current velocity
-            return std::copysign(velocityDeltaMagnitude, -1.0f * _velocityInPercentPerSecond);
+            return std::copysign(velocityDeltaMagnitude, -1.0f * _velocityInUnitsPerSecond);
         }
     }
     else
@@ -85,61 +81,60 @@ double Catcher::GetVelocityDelta(double tickDurationInSeconds, MoveDirection req
     }
 }
 
-double Catcher::GetNewVelocity(double velocityDeltaInPercentPerSecond,
+double Catcher::GetNewVelocity(double velocityDeltaInUnitsPerSecond,
                                MoveDirection requestedDirection)
 {
-    double newVelocityInPercentPerSecond =
-        _velocityInPercentPerSecond + velocityDeltaInPercentPerSecond;
+    double newVelocityInUnitsPerSecond = _velocityInUnitsPerSecond + velocityDeltaInUnitsPerSecond;
 
     // Clip to maximum velocity if new velocity was going to exceed it
-    if (std::fabs(newVelocityInPercentPerSecond) > MAX_VELOCITY_IN_PERCENT_PER_SEC)
+    if (std::fabs(newVelocityInUnitsPerSecond) > MAX_VELOCITY_IN_UNITS_PER_SEC)
     {
-        newVelocityInPercentPerSecond =
-            std::copysign(MAX_VELOCITY_IN_PERCENT_PER_SEC, newVelocityInPercentPerSecond);
+        newVelocityInUnitsPerSecond =
+            std::copysign(MAX_VELOCITY_IN_UNITS_PER_SEC, newVelocityInUnitsPerSecond);
     }
 
     // Clip to zero velocity if new velocity was going to cross over zero for a no-movement request
     if ((requestedDirection == MoveDirection::_kNoMovement) &&
-        (_velocityInPercentPerSecond * newVelocityInPercentPerSecond < 0.0))
+        (_velocityInUnitsPerSecond * newVelocityInUnitsPerSecond < 0.0))
     {
-        newVelocityInPercentPerSecond = 0.0; // Catcher comes to a halt
+        newVelocityInUnitsPerSecond = 0.0; // Catcher comes to a halt
     }
 
-    return newVelocityInPercentPerSecond;
+    return newVelocityInUnitsPerSecond;
 }
 
 void Catcher::UpdatePositionAndVelocity(double tickDurationInSeconds, double newVelocity)
 {
     // Use trapezoidal-rule to compute travel distance
-    double averageVelocityInPercentPerSecond = (_velocityInPercentPerSecond + newVelocity) / 2.0;
-    double travelDistanceInPercent = averageVelocityInPercentPerSecond * tickDurationInSeconds;
+    double averageVelocityInUnitsPerSecond = (_velocityInUnitsPerSecond + newVelocity) / 2.0;
+    double travelDistanceInPercent = averageVelocityInUnitsPerSecond * tickDurationInSeconds;
 
-    float newPositionInPercent = _positionInPercent + (float)travelDistanceInPercent;
+    float newCentrePosition = _centrePosition + (float)travelDistanceInPercent;
 
-    if (LeftEdgeForPosition(newPositionInPercent) < LEFT_LIMIT_POSITION_IN_PERCENT)
+    if (LeftEdgeForCentrePosition(newCentrePosition) < LEFT_LIMIT_POSITION)
     {
-        newPositionInPercent = LEFT_LIMIT_POSITION_IN_PERCENT + _halfWidthInPercent;
-        _velocityInPercentPerSecond = 0.0;
+        newCentrePosition = LEFT_LIMIT_POSITION + _halfWidth;
+        _velocityInUnitsPerSecond = 0.0;
     }
-    else if (RightEdgeForPosition(newPositionInPercent) > RIGHT_LIMIT_POSITION_IN_PERCENT)
+    else if (RightEdgeForCentrePosition(newCentrePosition) > RIGHT_LIMIT_POSITION)
     {
-        newPositionInPercent = RIGHT_LIMIT_POSITION_IN_PERCENT - _halfWidthInPercent;
-        _velocityInPercentPerSecond = 0.0;
+        newCentrePosition = RIGHT_LIMIT_POSITION - _halfWidth;
+        _velocityInUnitsPerSecond = 0.0;
     }
     else
     {
-        _velocityInPercentPerSecond = newVelocity;
+        _velocityInUnitsPerSecond = newVelocity;
     }
 
-    _positionInPercent = newPositionInPercent;
+    _centrePosition = newCentrePosition;
 }
 
-float Catcher::LeftEdgeForPosition(float position)
+float Catcher::LeftEdgeForCentrePosition(float centrePosition)
 {
-    return position - _halfWidthInPercent;
+    return centrePosition - _halfWidth;
 }
 
-float Catcher::RightEdgeForPosition(float position)
+float Catcher::RightEdgeForCentrePosition(float centrePosition)
 {
-    return position + _halfWidthInPercent;
+    return centrePosition + _halfWidth;
 }

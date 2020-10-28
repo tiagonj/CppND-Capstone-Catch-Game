@@ -99,11 +99,10 @@ float Game::CatcherRightEdgePositionInPercent() const
 
 bool Game::HasFallerBeenCaught(std::unique_ptr<Faller>& f)
 {
-    if ((f->DownPositionInPercent() <= DOWN_LIMIT_POSITION_IN_PERCENT) &&
-        !HasFallerFallenBeyondCaptureRegion(f))
+    if ((f->DownPosition() <= DOWN_LIMIT_POSITION) && !HasFallerFallenBeyondCaptureRegion(f))
     {
-        float leftPos = f->LeftPositionInPercent();
-        float rightPos = f->RightPositionInPercent();
+        float leftPos = f->LeftPosition();
+        float rightPos = f->RightPosition();
         float width = rightPos - leftPos;
 
         float catcherLeftPos = _catcher->LeftEdgePosition();
@@ -139,15 +138,15 @@ bool Game::HasFallerBeenCaught(std::unique_ptr<Faller>& f)
 
 bool Game::HasFallerFallenBeyondCaptureRegion(std::unique_ptr<Faller>& f)
 {
-    float upPos = f->UpPositionInPercent();
-    float dnPos = f->DownPositionInPercent();
+    float upPos = f->UpPosition();
+    float dnPos = f->DownPosition();
     assert(dnPos < upPos);
 
-    if (upPos < DOWN_LIMIT_POSITION_IN_PERCENT)
+    if (upPos < DOWN_LIMIT_POSITION)
     {
         return true;
     }
-    else if (dnPos < DOWN_LIMIT_POSITION_IN_PERCENT)
+    else if (dnPos < DOWN_LIMIT_POSITION)
     {
         float height = upPos - dnPos;
         return upPos < (FALLER_ESCAPE_HEIGHT_THRESHOLD_PERCENT * height);

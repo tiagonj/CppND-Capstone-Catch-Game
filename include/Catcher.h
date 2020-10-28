@@ -28,15 +28,15 @@ class Catcher
 
     MoveDirection GetRequestedMoveDirection(bool moveLeft, bool moveRight);
     double GetVelocityDelta(double tickDurationInSeconds, MoveDirection requestedDirection);
-    double GetNewVelocity(double velocityDeltaInPercentPerSecond, MoveDirection requestedDirection);
+    double GetNewVelocity(double velocityDeltaInUnitsPerSecond, MoveDirection requestedDirection);
     void UpdatePositionAndVelocity(double tickDurationInSeconds, double newVelocity);
-    float LeftEdgeForPosition(float position);
-    float RightEdgeForPosition(float position);
+    float LeftEdgeForCentrePosition(float centrePosition);
+    float RightEdgeForCentrePosition(float centrePosition);
 
   private:
-    float _positionInPercent{0.5f};
-    float _halfWidthInPercent{0.05f};
-    double _velocityInPercentPerSecond{0.0}; // Negative: left; Positive: right
+    float _centrePosition{0.5f};           // Note: positions are in normalised units (0.0 ~ 1.0)
+    float _halfWidth{0.05f};               // In normalised units
+    double _velocityInUnitsPerSecond{0.0}; // Negative: left; Positive: right
 };
 
 #endif
