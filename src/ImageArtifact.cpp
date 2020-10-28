@@ -5,8 +5,8 @@ ImageArtifact::ImageArtifact(std::string imageFileName)
     // TODO
     (void)imageFileName;
     // TODO fix below
-    _heightInPercent = 0.02f;
-    _widthInPercent = 0.02f;
+    _heightInPercent = 0.025f;
+    _widthInPercent = 0.025f;
 }
 
 ImageArtifact::~ImageArtifact()

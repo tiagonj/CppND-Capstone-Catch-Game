@@ -22,8 +22,8 @@ class Renderer
     ~Renderer();
 
     void RenderGame(const Game& game, const uint32_t framesPerSecond);
-    void RefreshWindowTitle(const uint32_t points, const uint32_t nrOfFallers,
-                            const uint32_t framesPerSecond, const bool isPaused);
+    void RefreshWindowTitle(const uint32_t points, const uint32_t framesPerSecond,
+                            const bool isPaused);
 
     void WindowSizeChanged(int newWidth, int newHeight);
 

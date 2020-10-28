@@ -75,7 +75,7 @@ void Renderer::RenderGame(const Game& game, const uint32_t framesPerSecond)
     SDL_RenderPresent(_sdl_Renderer);
 
     // Refresh window title text
-    RefreshWindowTitle(game.Points(), game.NumberOfFallers(), framesPerSecond, game.IsPaused());
+    RefreshWindowTitle(game.Points(), framesPerSecond, game.IsPaused());
 }
 
 void Renderer::RenderCatcher(const Game& game, const int catcherRegionHeight)
@@ -125,12 +125,11 @@ void Renderer::RenderFallers(const Game& game, const int fallersRegionHeight)
     }
 }
 
-void Renderer::RefreshWindowTitle(const uint32_t points, const uint32_t nrOfFallers,
-                                  const uint32_t framesPerSecond, const bool isPaused)
+void Renderer::RefreshWindowTitle(const uint32_t points, const uint32_t framesPerSecond,
+                                  const bool isPaused)
 {
     std::string title{_gameName + " Points: " + std::to_string(points) + " (" +
-                      std::to_string(framesPerSecond) +
-                      " fps) Number of fallers: " + std::to_string(nrOfFallers)};
+                      std::to_string(framesPerSecond) + " fps)"};
 
     if (isPaused)
     {
