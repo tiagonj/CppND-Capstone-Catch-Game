@@ -10,6 +10,13 @@ void InputReader::ReadInputs(ApplicationInputs& appInputs, GameInputs& gameInput
     gameInputs.moveLeftIsPressed = false;
     gameInputs.moveRightIsPressed = false;
 
+    // Obtain left/right key state directly from keyboard
+    // state so as to continuously process these
+    // (From: https://gamedev.stackexchange.com/a/19583)
+    const Uint8* state = SDL_GetKeyboardState(NULL);
+    gameInputs.moveLeftIsPressed = (1 == state[SDL_SCANCODE_LEFT]);
+    gameInputs.moveRightIsPressed = (1 == state[SDL_SCANCODE_RIGHT]);
+
     // Poll for any available SDL events
     SDL_Event ev;
     while (SDL_PollEvent(&ev))
@@ -22,16 +29,6 @@ void InputReader::ReadInputs(ApplicationInputs& appInputs, GameInputs& gameInput
         {
             switch (ev.key.keysym.sym)
             {
-                case SDLK_LEFT:
-                {
-                    gameInputs.moveLeftIsPressed = true;
-                    break;
-                }
-                case SDLK_RIGHT:
-                {
-                    gameInputs.moveRightIsPressed = true;
-                    break;
-                }
                 case SDLK_p:
                 {
                     appInputs.pauseIsPressed = true;
