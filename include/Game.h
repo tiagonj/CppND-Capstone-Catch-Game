@@ -26,7 +26,13 @@ class Game
     void Resume();
     void Pause();
     void Update(double tickDurationInSeconds, GameInputs& inputs);
-    bool IsPaused();
+    bool IsPaused() const;
+
+    // State
+    uint32_t Points() const;
+    std::size_t NumberOfFallers() const;
+    float CatcherLeftEdgePositionInPercent() const;
+    float CatcherRightEdgePositionInPercent() const;
 
   private:
     bool HasFallerBeenCaught(std::unique_ptr<Faller>& f);

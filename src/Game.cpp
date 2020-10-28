@@ -3,7 +3,6 @@
 
 #include <algorithm>
 #include <cassert>
-#include <iostream>
 
 #define DEFAULT_X_GRAVITY_IN_PERCENT_PER_SEC_SQUARED ((float)0.0f)
 #define DEFAULT_Y_GRAVITY_IN_PERCENT_PER_SEC_SQUARED ((float)-0.1f)
@@ -71,21 +70,31 @@ void Game::Update(double tickDurationInSeconds, GameInputs& inputs)
             it = std::next(it);
         }
     }
-
-    for (unsigned int ii = 0; ii < 429496730; ++ii)
-    {
-        // Do nothing
-        (void)inputs;
-    }
-
-    std::cout << "Finished updating game! tickDuration = " << tickDurationInSeconds
-              << ", updates/sec = " << (1.0 / tickDurationInSeconds) << " (points = " << _points
-              << ")\n";
 }
 
-bool Game::IsPaused()
+bool Game::IsPaused() const
 {
     return _isPaused;
+}
+
+uint32_t Game::Points() const
+{
+    return _points;
+}
+
+std::size_t Game::NumberOfFallers() const
+{
+    return _fallers.size();
+}
+
+float Game::CatcherLeftEdgePositionInPercent() const
+{
+    return _catcher->LeftEdgePosition();
+}
+
+float Game::CatcherRightEdgePositionInPercent() const
+{
+    return _catcher->RightEdgePosition();
 }
 
 bool Game::HasFallerBeenCaught(std::unique_ptr<Faller>& f)

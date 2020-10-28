@@ -3,6 +3,7 @@
 
 #include "Game.h"
 #include "Metronome.h"
+#include "Renderer.h"
 
 #include <memory>
 
@@ -29,12 +30,11 @@ class Application
     Application();
     ~Application();
 
-    void Initialise();
     void Run();
 
     void CreateNewGame();
-    void ExecuteGameLoop();
-    void ExecutePauseLoop();
+    void ExecuteGameLoop(Renderer& renderer);
+    void ExecutePauseLoop(Renderer& renderer);
     void ProcessInputsWhenInGameLoop(GameInputs& gameInputs);
     void ProcessInputsWhenInPauseLoop();
 

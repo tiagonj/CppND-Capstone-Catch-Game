@@ -7,6 +7,9 @@
 #include <memory>
 #include <thread>
 
+#define APPLICATION_WINDOW_WIDTH (800)
+#define APPLICATION_WINDOW_HEIGHT (600)
+
 // Singleton application instance
 Application Application::_app;
 
@@ -24,35 +27,34 @@ void Application::Launch()
     std::cout << "Welcome to Catch!"
               << "\n";
 
-    _app.Initialise();
     _app.Run();
-}
 
-void Application::Initialise()
-{
-    Renderer::Initialise();
+    std::cout << "Exiting... Hope you enjoyed playing Catch!"
+              << "\n";
 }
 
 void Application::Run()
 {
+    Renderer renderer("Catch!", APPLICATION_WINDOW_WIDTH, APPLICATION_WINDOW_HEIGHT);
+
     while (true)
     {
         switch (_nextState)
         {
             case _kStartNewGame:
             {
-                _app.CreateNewGame();
+                CreateNewGame();
                 _nextState = ApplicationState::_kPlayGame;
                 break;
             }
             case _kPauseGame:
             {
-                _app.ExecutePauseLoop();
+                ExecutePauseLoop(renderer);
                 break;
             }
             case _kPlayGame:
             {
-                _app.ExecuteGameLoop();
+                ExecuteGameLoop(renderer);
                 break;
             }
             case _kQuitApplication:
@@ -72,7 +74,7 @@ void Application::CreateNewGame()
     _game = std::make_unique<Game>();
 }
 
-void Application::ExecuteGameLoop()
+void Application::ExecuteGameLoop(Renderer& renderer)
 {
     _game->Resume();
 
@@ -80,24 +82,24 @@ void Application::ExecuteGameLoop()
     {
         auto autoMetronome = AutoMetronome(_gameMetronome);
         GameInputs gameInputs;
-        _app.ProcessInputsWhenInGameLoop(gameInputs);
+        ProcessInputsWhenInGameLoop(gameInputs);
         double tickDurationInSeconds = 1.0 / _gameMetronome.UpdatesPerSecond();
         this->_game->Update(tickDurationInSeconds, gameInputs);
-        Renderer::RenderGame();
+        renderer.RenderGame(*_game.get(), _gameMetronome.UpdatesPerSecond());
     }
 
     _game->Pause();
 }
 
-void Application::ExecutePauseLoop()
+void Application::ExecutePauseLoop(Renderer& renderer)
 {
     assert(_game->IsPaused());
 
     while (_nextState == ApplicationState::_kPauseGame)
     {
         auto autoMetronome = AutoMetronome(_pauseMetronome);
-        _app.ProcessInputsWhenInPauseLoop();
-        // TODO render
+        ProcessInputsWhenInPauseLoop();
+        renderer.RenderGame(*_game.get(), _gameMetronome.UpdatesPerSecond());
     }
 }
 
