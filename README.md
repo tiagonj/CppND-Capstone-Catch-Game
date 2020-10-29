@@ -110,8 +110,8 @@ Close the game by closing the window.
   * Defines the `FallerGenerator` class (owned exclusively by the `Game` object)
   * Helper object which encapsulates all the `FallerFactories` and manages their lifecycle (pause/resume/terminate)
   * The `FallerGenerator` is owned exclusively by the `Game` object
-* `ImageArtifact.h` / `ImageArtifact.cpp`
-  * Defienes the `ImageArtifact` class
+* `FallerSprite.h` / `FallerSprite.cpp`
+  * Defienes the `FallerSprite` class
   * Encapsulates the sprite (resource itself & render dimensions) for a given `Faller` type (e.g. `Olive`)
 
 # Project rubric points addressed

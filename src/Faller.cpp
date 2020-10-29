@@ -17,7 +17,7 @@ void Faller::Update(double timeDeltaInSeconds, float xAccelInUnitsPerSecSquared,
                     yAccelInUnitsPerSecSquared);
 }
 
-ImageArtifact& Faller::GetImageArtifact() const
+FallerSprite& Faller::GetImageArtifact() const
 {
     return *_img;
 }
@@ -47,7 +47,7 @@ uint32_t Faller::RewardPoints() const
     return _rewardPoints;
 }
 
-Faller::Faller(std::shared_ptr<ImageArtifact>& img, float x, float vx, float vy,
+Faller::Faller(std::shared_ptr<FallerSprite>& img, float x, float vx, float vy,
                uint32_t rewardPoints)
     : _xPosition(x),
       _yPosition(UP_LIMIT_POSITION - img->HalfHeightInPercent()),

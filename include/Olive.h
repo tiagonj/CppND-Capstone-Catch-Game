@@ -19,7 +19,7 @@ class Olive : public Faller
     Olive& operator=(Olive&&) = delete;
 
   private:
-    static std::shared_ptr<ImageArtifact> _oliveImg;
+    static std::shared_ptr<FallerSprite> _oliveImg;
 };
 
 #endif

@@ -1,7 +1,7 @@
 #ifndef CATCH_GAME_FALLER_H
 #define CATCH_GAME_FALLER_H
 
-#include "ImageArtifact.h"
+#include "FallerSprite.h"
 
 #include <cstdint>
 #include <memory>
@@ -13,7 +13,7 @@ class Faller
     ~Faller();
     virtual void Update(double timeDeltaInSeconds, float xAccelInUnitsPerSecSquared,
                         float yAccelInUnitsPerSecSquared); // Default update (can be overriden)
-    ImageArtifact& GetImageArtifact() const;
+    FallerSprite& GetImageArtifact() const;
     float UpPosition() const;
     float DownPosition() const;
     float LeftPosition() const;
@@ -21,7 +21,7 @@ class Faller
     uint32_t RewardPoints() const;
 
   protected:
-    Faller(std::shared_ptr<ImageArtifact>& img, float x, float vx, float vy, uint32_t rewardPoints);
+    Faller(std::shared_ptr<FallerSprite>& img, float x, float vx, float vy, uint32_t rewardPoints);
     void UpdatePosAndVel(double timeDeltaInSeconds, float& pos, float& vel, float accel);
     void UpdateXPosAndVel(double timeDeltaInSeconds, float accel);
 
@@ -42,7 +42,7 @@ class Faller
     uint32_t _rewardPoints;
 
   private:
-    std::shared_ptr<ImageArtifact> _img;
+    std::shared_ptr<FallerSprite> _img;
 };
 
 #endif

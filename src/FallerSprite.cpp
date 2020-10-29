@@ -1,6 +1,6 @@
-#include "ImageArtifact.h"
+#include "FallerSprite.h"
 
-ImageArtifact::ImageArtifact(std::string imageFileName)
+FallerSprite::FallerSprite(std::string imageFileName)
 {
     // TODO
     (void)imageFileName;
@@ -9,17 +9,17 @@ ImageArtifact::ImageArtifact(std::string imageFileName)
     _widthInPercent = 0.025f;
 }
 
-ImageArtifact::~ImageArtifact()
+FallerSprite::~FallerSprite()
 {
     // TODO
 }
 
-float ImageArtifact::HalfHeightInPercent()
+float FallerSprite::HalfHeightInPercent()
 {
     return _heightInPercent / 2.0f;
 }
 
-float ImageArtifact::HalfWidthInPercent()
+float FallerSprite::HalfWidthInPercent()
 {
     return _widthInPercent / 2.0f;
 }
