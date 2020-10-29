@@ -13,4 +13,4 @@ file(GLOB catch_game_SOURCES src/*.cpp)
 
 # Generate executable
 add_executable(catch_game ${catch_game_SOURCES})
-target_link_libraries(catch_game ${SDL2_LIBRARIES})
+target_link_libraries(catch_game ${SDL2_LIBRARIES} SDL2_image)

@@ -30,6 +30,7 @@ class Application
     Application();
     ~Application();
 
+    bool Initialise();
     void Run();
 
     void CreateNewGame();

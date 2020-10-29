@@ -21,6 +21,7 @@ class Renderer
     Renderer(std::string gameName, int windowWidth, int windowHeight);
     ~Renderer();
 
+    bool InitialisedSuccessfully() const;
     void RenderGame(const Game& game, const uint32_t framesPerSecond);
     void RefreshWindowTitle(const uint32_t points, const uint32_t framesPerSecond,
                             const bool isPaused);
@@ -28,6 +29,11 @@ class Renderer
     void WindowSizeChanged(int newWidth, int newHeight);
 
   private:
+    bool InitialiseSDL();
+    bool InitialiseWindow(int windowWidth, int windowHeight);
+    bool InitialiseRenderer();
+    bool InitialisePNGLoading();
+
     void RenderCatcher(const Game& game, const int catcherRegionHeight);
     void RenderFallers(const Game& game, const int fallersRegionHeight);
 
@@ -40,6 +46,7 @@ class Renderer
     Renderer& operator=(Renderer&&) = delete;
 
   private:
+    bool _initialisedSuccessfully;
     std::string _gameName;
     int _windowWidth{0};
     int _windowHeight{0};

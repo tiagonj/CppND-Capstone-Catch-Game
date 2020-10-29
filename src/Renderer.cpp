@@ -1,6 +1,7 @@
 #include "Renderer.h"
 
 #include <SDL.h>
+#include <SDL_image.h>
 
 #include <cstdint>
 #include <iostream>
@@ -12,40 +13,68 @@ static constexpr Colour _kBackgroundColour{.r = 0x1E, .g = 0x1E, .b = 0x1E};
 static constexpr Colour _kCatcherColour{.r = 0xFF, .g = 0xFF, .b = 0xFF};
 static constexpr Colour _kTempFallerColour{.r = 0xFF, .g = 0xFF, .b = 0xFF}; // TODO REMOVE
 
-Renderer::Renderer(std::string gameName, int windowWidth, int windowHeight)
-    : _gameName(gameName),
-      _windowWidth(windowWidth),
-      _windowHeight(windowHeight)
+bool Renderer::InitialiseSDL()
 {
-    if (0 == SDL_Init(SDL_INIT_VIDEO))
-    {
-        _sdl_Window =
-            SDL_CreateWindow(_gameName.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-                             windowWidth, windowHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
-
-        if (nullptr == _sdl_Window)
-        {
-            std::cerr << "Failed to create Window using SDL library\n";
-            std::cerr << "SDL_Error(): " << SDL_GetError() << "\n";
-        }
-        else
-        {
-            _sdl_Renderer = SDL_CreateRenderer(_sdl_Window, -1, SDL_RENDERER_ACCELERATED);
-            if (nullptr == _sdl_Renderer)
-            {
-                std::cerr << "Failed to create Renderer using SDL library\n";
-                std::cerr << "SDL_Error(): " << SDL_GetError() << "\n";
-
-                SDL_DestroyWindow(_sdl_Window);
-                _sdl_Window = nullptr;
-            }
-        }
-    }
-    else
+    if (0 != SDL_Init(SDL_INIT_VIDEO))
     {
         std::cerr << "Failed to initilise SDL library\n";
         std::cerr << "SDL_Error(): " << SDL_GetError() << "\n";
+        return false;
     }
+    return true;
+}
+
+bool Renderer::InitialiseWindow(int windowWidth, int windowHeight)
+{
+    _sdl_Window =
+        SDL_CreateWindow(_gameName.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+                         windowWidth, windowHeight, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+
+    if (nullptr == _sdl_Window)
+    {
+        std::cerr << "Failed to create Window using SDL library\n";
+        std::cerr << "SDL_Error(): " << SDL_GetError() << "\n";
+        return false;
+    }
+    return true;
+}
+
+bool Renderer::InitialiseRenderer()
+{
+    _sdl_Renderer = SDL_CreateRenderer(_sdl_Window, -1, SDL_RENDERER_ACCELERATED);
+
+    if (nullptr == _sdl_Renderer)
+    {
+        std::cerr << "Failed to create Renderer using SDL library\n";
+        std::cerr << "SDL_Error(): " << SDL_GetError() << "\n";
+        return false;
+    }
+    return true;
+}
+
+bool Renderer::InitialisePNGLoading()
+{
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
+    {
+        std::cerr << "Failed to initialise PNG image loading using SDL library\n";
+        std::cerr << "IMG_GetError(): " << IMG_GetError() << "\n";
+        return false;
+    }
+    return true;
+}
+
+Renderer::Renderer(std::string gameName, int windowWidth, int windowHeight)
+    : _initialisedSuccessfully(false),
+      _gameName(gameName),
+      _windowWidth(windowWidth),
+      _windowHeight(windowHeight)
+{
+    bool success = true;
+    success &= success && InitialiseSDL();
+    success &= success && InitialiseWindow(windowWidth, windowHeight);
+    success &= success && InitialiseRenderer();
+    success &= success && InitialisePNGLoading();
+    _initialisedSuccessfully = success;
 }
 
 Renderer::~Renderer()
@@ -56,6 +85,11 @@ Renderer::~Renderer()
     }
 
     SDL_Quit();
+}
+
+bool Renderer::InitialisedSuccessfully() const
+{
+    return _initialisedSuccessfully;
 }
 
 void Renderer::RenderGame(const Game& game, const uint32_t framesPerSecond)

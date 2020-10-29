@@ -27,16 +27,25 @@ void Application::Launch()
     std::cout << "Welcome to Catch!"
               << "\n";
 
-    _app.Run();
+    if (_app.Initialise())
+    {
+        _app.Run();
 
-    std::cout << "Exiting... Hope you enjoyed playing Catch!"
-              << "\n";
+        std::cout << "Exiting... Hope you enjoyed playing Catch!"
+                  << "\n";
+    }
+}
+
+bool Application::Initialise()
+{
+    _renderer =
+        std::make_unique<Renderer>("Catch!", APPLICATION_WINDOW_WIDTH, APPLICATION_WINDOW_HEIGHT);
+
+    return _renderer->InitialisedSuccessfully();
 }
 
 void Application::Run()
 {
-    _renderer =
-        std::make_unique<Renderer>("Catch!", APPLICATION_WINDOW_WIDTH, APPLICATION_WINDOW_HEIGHT);
 
     while (true)
     {
