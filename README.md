@@ -17,7 +17,7 @@ I have fond memories of feeling a great sense of pride for having created someth
 
 Fast forward to 2020. For my Udacity C++ Nanodegree Capstone project I have decided to honour my 2006 bright-eyed self by implementing a game which uses the same gameplay elements of _Apanha da Azeitona_, and thus showcase some learnings from this Nanodegree.
 
-The game, _Catch!_ features the same gameplay style as its spiritual predecessor:
+The game, _Catch!_, features the same gameplay style as its spiritual predecessor:
 * A "basket" which can be moved left and right, and
 * Pseudo-randomly generated objects which the player must catch in order to score points.
 
@@ -60,3 +60,82 @@ or you can simply
 # How to play
 
 Use the `left-arrow` and `right-arrow` keys on your keyboard to move the basket. Score points by catching falling objects. And beware of any objects that you're not supposed to catch ...
+
+Press `P` to pause (and then unpause) the game.
+
+
+# File / class structure
+
+* `Application.h` / `Application.cpp`
+  * Entry point (`main()`) and game loop management
+* `Metronome.h` / `Metronome.cpp`
+  * Automatic adjustment of frames/second based on measured game loop execution duration
+* (...)
+
+**TODO complete**
+
+**TODO complete**
+
+**TODO complete**
+
+**TODO complete**
+
+
+# Project rubric points addressed
+
+## README
+* ✅ A README with instructions is included with the project
+* ✅ The README indicates which project is chosen
+* ❌ [**TODO: INFO STILL BEING PUT TOGETHER!**] The README includes information about each rubric point addressed
+
+## Compiling and Testing
+* ✅ The submission must compile and run
+
+## Loops, Functions, I/O
+* ✅ The project demonstrates an understanding of C++ functions and control structures
+  * **TODO** example
+* ❌ [**TODO SPRITES**] The project reads data from a file and process the data, or the program writes data to a file
+  * **TODO** examples
+* ✅ The project accepts user input and processes the input
+  * The `InputReader::ReadInputs()` method reads inputs from the keyboard  (using SDL library calls), specifically left & right arrow, as well as the `P` key (pause)
+
+## Object Oriented Programming
+* ✅ The project uses Object Oriented Programming techniques
+  * The whole project code is organized into classes with class attributes to hold the data, and class methods to perform tasks.
+* ✅ Classes use appropriate access specifiers for class members.
+  * **TODO** examples
+* ✅ Class constructors utilize member initialization lists
+  * **TODO** examples
+* ✅ Classes abstract implementation details from their interfaces
+  * **TODO** examples
+* ✅ Classes encapsulate behavior
+  * **TODO** examples
+* ✅ Classes follow an appropriate inheritance hierarchy
+  * **TODO** examples
+* ✅ Overloaded functions allow the same function to operate on different parameters
+  * **TODO** examples
+* ✅ Derived class functions override virtual base class functions
+  * **TODO** examples
+* ❌ Templates generalize functions in the project
+
+## Memory Management
+* ✅ The project makes use of references in function declarations
+  * **TODO** examples
+* ✅ The project uses destructors appropriately
+  * **TODO** examples
+* ✅ The project uses scope / Resource Acquisition Is Initialization (RAII) where appropriate
+  * **TODO** examples
+* ❌/✅ The project follows the Rule of 5
+  * For this project we have not needed to use copy or move semantics on any of the project classes (they are used on smart pointer classes)
+* ✅ The project uses move semantics to move data, instead of copying it, where possible
+  * **TODO** examples
+* ✅ The project uses smart pointers instead of raw pointers
+  * **TODO** examples
+
+## Concurrency
+* ✅ The project uses multithreading
+  * **TODO** examples
+* ❌ A promise and future is used in the project
+* ✅ A mutex or lock is used in the project
+  * **TODO** examples
+* ❌ A condition variable is used in the project
