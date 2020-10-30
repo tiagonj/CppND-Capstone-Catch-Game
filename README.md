@@ -113,9 +113,6 @@ Close the game by closing the window.
   * Defines the `FallerGenerator` class (owned exclusively by the `Game` object)
   * Helper object which encapsulates all the `FallerFactories` and manages their lifecycle (pause/resume/terminate)
   * The `FallerGenerator` is owned exclusively by the `Game` object
-* `FallerSprite.h` / `FallerSprite.cpp`
-  * Defienes the `FallerSprite` class
-  * Encapsulates the sprite (resource itself & render dimensions) for a given `Faller` type (e.g. `Olive`)
 
 # Project rubric points addressed
 
@@ -177,3 +174,9 @@ Close the game by closing the window.
 * ✅ A mutex or lock is used in the project
   * **TODO** examples
 * ❌ A condition variable is used in the project
+
+# Copyright information
+
+All sprite images are emojis created by OpenMoji.
+
+All emojis designed by [OpenMoji](https://openmoji.org/) – the open-source emoji and icon project. License: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/#)

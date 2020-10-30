@@ -1,10 +1,8 @@
 #ifndef CATCH_GAME_FALLER_H
 #define CATCH_GAME_FALLER_H
 
-#include "FallerSprite.h"
-
 #include <cstdint>
-#include <memory>
+#include <string>
 
 // Interface/base class for Faller objects
 class Faller
@@ -13,15 +11,15 @@ class Faller
     ~Faller();
     virtual void Update(double timeDeltaInSeconds, float xAccelInUnitsPerSecSquared,
                         float yAccelInUnitsPerSecSquared); // Default update (can be overriden)
-    FallerSprite& GetImageArtifact() const;
     float UpPosition() const;
     float DownPosition() const;
     float LeftPosition() const;
     float RightPosition() const;
     uint32_t RewardPoints() const;
+    virtual std::string& Name() const = 0;
 
   protected:
-    Faller(std::shared_ptr<FallerSprite>& img, float x, float vx, float vy, uint32_t rewardPoints);
+    Faller(float width, float height, float x, float vx, float vy, uint32_t rewardPoints);
     void UpdatePosAndVel(double timeDeltaInSeconds, float& pos, float& vel, float accel);
     void UpdateXPosAndVel(double timeDeltaInSeconds, float accel);
 
@@ -42,7 +40,8 @@ class Faller
     uint32_t _rewardPoints;
 
   private:
-    std::shared_ptr<FallerSprite> _img;
+    float _halfWidth{0.0f};
+    float _halfHeight{0.0f};
 };
 
 #endif

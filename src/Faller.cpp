@@ -17,29 +17,24 @@ void Faller::Update(double timeDeltaInSeconds, float xAccelInUnitsPerSecSquared,
                     yAccelInUnitsPerSecSquared);
 }
 
-FallerSprite& Faller::GetImageArtifact() const
-{
-    return *_img;
-}
-
 float Faller::UpPosition() const
 {
-    return _yPosition + _img->HalfHeightInPercent();
+    return _yPosition + _halfHeight;
 }
 
 float Faller::DownPosition() const
 {
-    return _yPosition - _img->HalfHeightInPercent();
+    return _yPosition - _halfHeight;
 }
 
 float Faller::LeftPosition() const
 {
-    return _xPosition - _img->HalfWidthInPercent();
+    return _xPosition - _halfWidth;
 }
 
 float Faller::RightPosition() const
 {
-    return _xPosition + _img->HalfWidthInPercent();
+    return _xPosition + _halfWidth;
 }
 
 uint32_t Faller::RewardPoints() const
@@ -47,21 +42,20 @@ uint32_t Faller::RewardPoints() const
     return _rewardPoints;
 }
 
-Faller::Faller(std::shared_ptr<FallerSprite>& img, float x, float vx, float vy,
-               uint32_t rewardPoints)
+Faller::Faller(float width, float height, float x, float vx, float vy, uint32_t rewardPoints)
     : _xPosition(x),
-      _yPosition(UP_LIMIT_POSITION - img->HalfHeightInPercent()),
+      _yPosition(UP_LIMIT_POSITION - (height / 2.0f)),
       _xVelocityInUnitsPerSecond(vx),
       _yVelocityInUnitsPerSecond(vy),
       _rewardPoints(rewardPoints),
-      _img(img) // Copy constructor => share ownership of the image artifact
+      _halfWidth(width / 2.0f),
+      _halfHeight(height / 2.0f)
 {
     assert(_xPosition >= 0.0);
     assert(_xPosition <= 1.0);
 
-    float halfWidthInPercent = _img->HalfWidthInPercent();
-    float lowerLimit = LEFT_LIMIT_POSITION + halfWidthInPercent;
-    float upperLimit = RIGHT_LIMIT_POSITION - halfWidthInPercent;
+    float lowerLimit = LEFT_LIMIT_POSITION + _halfWidth;
+    float upperLimit = RIGHT_LIMIT_POSITION - _halfWidth;
 
     _xPosition = std::max(_xPosition, lowerLimit);
     _xPosition = std::min(_xPosition, upperLimit);

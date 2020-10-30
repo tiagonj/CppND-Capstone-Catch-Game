@@ -13,7 +13,7 @@ class OliveFactory : public FallerFactory
     ~OliveFactory();
 
   private:
-    std::unique_ptr<Faller> CreateFaller(float x, float vy);
+    std::unique_ptr<Faller> CreateFaller(float x, float vy) override;
 
     OliveFactory() = delete;
     OliveFactory(OliveFactory&) = delete;

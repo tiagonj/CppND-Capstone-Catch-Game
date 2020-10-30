@@ -3,13 +3,14 @@
 
 #include "Faller.h"
 
-#include <memory>
+#include <string>
 
 class Olive : public Faller
 {
   public:
     Olive(float x, float vy);
     ~Olive();
+    std::string& Name() const override;
 
   private:
     Olive() = delete;
@@ -19,7 +20,7 @@ class Olive : public Faller
     Olive& operator=(Olive&&) = delete;
 
   private:
-    static std::shared_ptr<FallerSprite> _oliveImg;
+    static std::string _name;
 };
 
 #endif

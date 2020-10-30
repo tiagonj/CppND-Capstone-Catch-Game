@@ -7,9 +7,6 @@
 #include <memory>
 #include <thread>
 
-#define APPLICATION_WINDOW_WIDTH (800)
-#define APPLICATION_WINDOW_HEIGHT (600)
-
 // Singleton application instance
 Application Application::_app;
 
@@ -38,8 +35,7 @@ void Application::Launch()
 
 bool Application::Initialise()
 {
-    _renderer =
-        std::make_unique<Renderer>("Catch!", APPLICATION_WINDOW_WIDTH, APPLICATION_WINDOW_HEIGHT);
+    _renderer = std::make_unique<Renderer>("Catch!");
 
     return _renderer->InitialisedSuccessfully();
 }
