@@ -75,8 +75,8 @@ void Faller::UpdateXPosAndVel(double timeDeltaInSeconds, float accel)
 
     UpdatePosAndVel(timeDeltaInSeconds, _xPosition, _xVelocityInUnitsPerSecond, accel);
 
-    bool exceedsLeftLimitPos = (_xPosition < LEFT_LIMIT_POSITION);
-    bool exceedsRightLimitPos = (_xPosition > RIGHT_LIMIT_POSITION);
+    bool exceedsLeftLimitPos = (LeftPosition() < LEFT_LIMIT_POSITION);
+    bool exceedsRightLimitPos = (RightPosition() > RIGHT_LIMIT_POSITION);
 
     if (exceedsLeftLimitPos || exceedsRightLimitPos)
     {
@@ -85,22 +85,23 @@ void Faller::UpdateXPosAndVel(double timeDeltaInSeconds, float accel)
         _xVelocityInUnitsPerSecond = _xPrevVelocity;
 
         float limitPos = exceedsLeftLimitPos ? LEFT_LIMIT_POSITION : RIGHT_LIMIT_POSITION;
+        float pos = exceedsLeftLimitPos ? LeftPosition() : RightPosition();
 
         // Solve quadratic equation: at which point in time is the limit position reached?
         float a = accel / 2.0f;
         float b = _xVelocityInUnitsPerSecond;
-        float c = _xPosition - limitPos;
+        float c = pos - limitPos;
         float smallest;
         float largest;
         SolveQuadraticEq(a, b, c, smallest, largest);
 
         // Pick largest solution if it's within the total time delta, otherwise pick the smallest
         float t = (largest <= timeDeltaInSeconds) ? largest : smallest;
-        assert(t > 0.0f);
+        assert(t >= 0.0f);
         float remainingTime = timeDeltaInSeconds - t;
 
         // Jump to the intermediate solution
-        _xPosition = limitPos;
+        _xPosition = exceedsLeftLimitPos ? (limitPos + _halfWidth) : (limitPos - _halfWidth);
         _xVelocityInUnitsPerSecond *= -1.0f;
 
         // Re-enter to calculate remaining solution (Note: because of the const accel and quadratic
@@ -114,7 +115,7 @@ void Faller::SolveQuadraticEq(float a, float b, float c, float& smallestSolution
 {
     // We're expecting real solutions only
     float discriminant = std::pow(b, 2.0f) - (4.0f * a * c);
-    assert(discriminant >= 0.0f); // TODO make this slightly more tolerant
+    assert(discriminant >= -1e-4f);
 
     float sqrtOfDiscriminant = std::sqrt(discriminant);
     float denominator = 2 * a;
