@@ -33,7 +33,7 @@ class Game
     std::size_t NumberOfFallers() const;
     float CatcherLeftEdgePositionInPercent() const;
     float CatcherRightEdgePositionInPercent() const;
-    std::vector<const Faller*> GetAllFallers() const; // TODO: ugly...
+    std::vector<const Faller*> GetAllFallers() const; // Ugly way to access, warrants improvement
 
   private:
     bool HasFallerBeenCaught(std::unique_ptr<Faller>& f);
