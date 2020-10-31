@@ -8,7 +8,7 @@
 class Olive : public Faller
 {
   public:
-    Olive(float x, float vy);
+    Olive(float x, float vx, float vy);
     ~Olive();
     std::string& Name() const override;
 
