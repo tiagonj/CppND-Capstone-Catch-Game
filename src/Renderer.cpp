@@ -10,7 +10,7 @@
 using dir_it = std::experimental::filesystem::directory_iterator;
 
 #define CATCHER_REGION_HEIGHT_IN_PERCENT ((float)0.1f)
-#define CATCHER_HEIGHT_IN_PERCENT_OF_REGION ((float)0.25f)
+#define CATCHER_HEIGHT_IN_PERCENT_OF_REGION ((float)0.20f)
 
 #define DEFAULT_WINDOW_WIDTH (800)
 #define DEFAULT_WINDOW_HEIGHT (DEFAULT_WINDOW_WIDTH * (1.0f + CATCHER_REGION_HEIGHT_IN_PERCENT))
