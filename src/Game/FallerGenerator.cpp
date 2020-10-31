@@ -1,4 +1,5 @@
 #include "FallerGenerator.h"
+#include "BroccoliFactory.h"
 #include "OliveFactory.h"
 #include "OnionFactory.h"
 
@@ -7,6 +8,7 @@ FallerGenerator::FallerGenerator(std::weak_ptr<FallerQueue> queue)
     // Create all factories
     _factories.push_back(std::make_unique<OliveFactory>(queue));
     _factories.push_back(std::make_unique<OnionFactory>(queue));
+    _factories.push_back(std::make_unique<BroccoliFactory>(queue));
 
     // Launch one thread for each of the factories instantiated above
     for (auto& f : _factories)
