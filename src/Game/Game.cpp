@@ -58,12 +58,14 @@ void Game::Update(double tickDurationInSeconds, GameInputs& inputs)
 
         if (HasFallerFallenBeyondCaptureRegion(*it))
         {
-            it = _fallers.erase(it); // Remove from vector of fallers
+            it->reset();             // Destroy Faller object
+            it = _fallers.erase(it); // Remove unique_ptr from container
         }
         else if (HasFallerBeenCaught(*it))
         {
             _points += (*it)->RewardPoints(); // Accrue points
-            it = _fallers.erase(it);          // Remove from vector of fallers
+            it->reset();                      // Destroy Faller object
+            it = _fallers.erase(it);          // Remove unique_ptr from container
         }
         else
         {
