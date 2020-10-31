@@ -21,11 +21,13 @@ class Faller
   protected:
     Faller(float width, float height, float x, float vx, float vy, uint32_t rewardPoints);
     void UpdatePosAndVel(double timeDeltaInSeconds, float& pos, float& vel, float accel);
-    void UpdateXPosAndVel(double timeDeltaInSeconds, float accel);
+    void UpdateXPosAndVel(double timeDeltaInSeconds, float accel, uint32_t recursionDepth = 0);
 
   private:
-    void SolveQuadraticEq(float a, float b, float c, float& smallestSolution,
-                          float& largestSolution);
+    static float GetBounceTimeDelta(float intervalInSeconds, float position, float limitPosition,
+                                    float velocity, float accel);
+    static void SolveQuadraticEq(float a, float b, float c, float& smallestSolution,
+                                 float& largestSolution);
     Faller() = delete;
     Faller(Faller&) = delete;
     Faller(Faller&&) = delete;

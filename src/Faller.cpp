@@ -4,6 +4,8 @@
 #include <cassert>
 #include <cmath>
 
+#define ONE_PERCENT_OF(_v) (0.01f * (float)(_v))
+
 Faller::~Faller()
 {
 }
@@ -68,11 +70,12 @@ void Faller::UpdatePosAndVel(double timeDeltaInSeconds, float& pos, float& vel, 
     vel = vel + (accel * timeDeltaInSeconds);
 }
 
-void Faller::UpdateXPosAndVel(double timeDeltaInSeconds, float accel)
+void Faller::UpdateXPosAndVel(double timeDeltaInSeconds, float accel, uint32_t recursionDepth)
 {
     float _xPrevPosition = _xPosition;
     float _xPrevVelocity = _xVelocityInUnitsPerSecond;
 
+    // Try naive integration first
     UpdatePosAndVel(timeDeltaInSeconds, _xPosition, _xVelocityInUnitsPerSecond, accel);
 
     bool exceedsLeftLimitPos = (LeftPosition() < LEFT_LIMIT_POSITION);
@@ -80,39 +83,59 @@ void Faller::UpdateXPosAndVel(double timeDeltaInSeconds, float accel)
 
     if (exceedsLeftLimitPos || exceedsRightLimitPos)
     {
-        // Revert
+        // Revert to values prior to naive integration attempt
         _xPosition = _xPrevPosition;
         _xVelocityInUnitsPerSecond = _xPrevVelocity;
 
         float limitPos = exceedsLeftLimitPos ? LEFT_LIMIT_POSITION : RIGHT_LIMIT_POSITION;
         float pos = exceedsLeftLimitPos ? LeftPosition() : RightPosition();
 
-        // Solve quadratic equation: at which point in time is the limit position reached?
-        float a = accel / 2.0f;
-        float b = _xVelocityInUnitsPerSecond;
-        float c = pos - limitPos;
-        float smallest;
-        float largest;
-        SolveQuadraticEq(a, b, c, smallest, largest);
+        float bounceTimeDelta = GetBounceTimeDelta(timeDeltaInSeconds, pos, limitPos,
+                                                   _xVelocityInUnitsPerSecond, accel);
+        float remainingTime = timeDeltaInSeconds - bounceTimeDelta;
 
-        // Pick largest solution if it's within the total time delta, otherwise pick the smallest
-        float t = (largest <= timeDeltaInSeconds) ? largest : smallest;
-        assert(t >= 0.0f);
-        float remainingTime = timeDeltaInSeconds - t;
-
-        // Jump to the intermediate solution
+        // Jump to 'bounceTimeDelta' i.e. instant the bounce occurs
         _xPosition = exceedsLeftLimitPos ? (limitPos + _halfWidth) : (limitPos - _halfWidth);
-        _xVelocityInUnitsPerSecond *= -1.0f;
+        _xVelocityInUnitsPerSecond *= -1.0f; // Bounce off (perfectly elastic, i.e. no energy loss)
 
-        // Re-enter to calculate remaining solution (Note: because of the const accel and quadratic
-        // nature of the motion equation we are guaranteed only do have to do this at most once
-        UpdateXPosAndVel(remainingTime, accel);
+        assert(recursionDepth < 150); // TODO REMOVE
+
+        if ((recursionDepth > 0) && (bounceTimeDelta < ONE_PERCENT_OF(remainingTime)))
+        {
+            // X-axis velocity is not large enough.
+            // Nip excessive recursion in the bud by nulling velocity altogether
+            _xVelocityInUnitsPerSecond = 0.0f;
+        }
+        else
+        {
+            // Re-enter to calculate remaining solution
+            UpdateXPosAndVel(remainingTime, accel, ++recursionDepth);
+        }
     }
+}
+
+float Faller::GetBounceTimeDelta(float intervalInSeconds, float position, float limitPosition,
+                                 float velocity, float accel)
+{
+    // Solve quadratic equation: at which point in time is the limit position reached?
+    float a = accel / 2.0f;
+    float b = velocity;
+    float c = position - limitPosition;
+    float smallest;
+    float largest;
+    SolveQuadraticEq(a, b, c, smallest, largest);
+
+    // Pick largest solution if it's within the total time delta, otherwise pick the smallest
+    float bounceTime = (largest <= intervalInSeconds) ? largest : smallest;
+    assert(bounceTime >= 0.0f);
+    return bounceTime;
 }
 
 void Faller::SolveQuadraticEq(float a, float b, float c, float& smallestSolution,
                               float& largestSolution)
 {
+    assert(a != 0.0f);
+
     // We're expecting real solutions only
     float discriminant = std::pow(b, 2.0f) - (4.0f * a * c);
     assert(discriminant >= -1e-4f);
