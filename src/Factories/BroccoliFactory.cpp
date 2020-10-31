@@ -1,7 +1,7 @@
 #include "BroccoliFactory.h"
 #include "Broccoli.h"
 
-#define GENERATION_PROBABILITY ((double)0.15f)
+#define GENERATION_PROBABILITY ((double)0.15)
 #define UPDATE_PERIOD_IN_MS ((uint32_t)2000)
 #define MAX_VEL_IN_PERCENT_PER_SEC ((float)0.6f)
 #define INITIAL_HORIZONTAL_VELOCITY ((float)0.0f)
