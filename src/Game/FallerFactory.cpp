@@ -1,4 +1,5 @@
 #include "FallerFactory.h"
+#include "PositionLimits.h"
 
 #include <cassert>
 #include <chrono>
@@ -40,7 +41,7 @@ void FallerFactory::Run()
         {
             // Generate and add new Faller to the game based
             // on simple probabilty thresholding logic
-            std::uniform_real_distribution<> dist(0.0, 1.0);
+            std::uniform_real_distribution<double> dist(0.0, 1.0);
             if (dist(_generationEngine) > _activationThresholdPercentage)
             {
                 AddFallerToGame();
@@ -98,12 +99,12 @@ void FallerFactory::AddFallerToGame()
 
 float FallerFactory::GenerateHorizontalPosition()
 {
-    std::uniform_real_distribution<> dist(0.0, 1.0);
+    std::uniform_real_distribution<float> dist(LEFT_LIMIT_POSITION, RIGHT_LIMIT_POSITION);
     return dist(_horizontalPositionEngine);
 }
 
 float FallerFactory::GenerateVerticalVelocity()
 {
-    std::uniform_real_distribution<> dist(-_maxVerticalVelocityMagnitude, 0.0);
+    std::uniform_real_distribution<float> dist(-_maxVerticalVelocityMagnitude, 0.0f);
     return dist(_verticalVelocityEngine);
 }
