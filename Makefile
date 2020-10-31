@@ -3,7 +3,8 @@ all: format build run
 
 .PHONY: format
 format:
-	clang-format-10 src/* include/* -i -style=file
+	find src/ -name '*.cpp' | xargs clang-format-10 -i -style=file
+	find include/ -name '*.h' | xargs clang-format-10 -i -style=file
 
 .PHONY: build
 build:
