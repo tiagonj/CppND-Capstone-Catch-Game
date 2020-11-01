@@ -70,81 +70,97 @@ void Faller::UpdatePosAndVel(double timeDeltaInSeconds, float& pos, float& vel, 
     vel = vel + (accel * timeDeltaInSeconds);
 }
 
-void Faller::UpdateXPosAndVel(double timeDeltaInSeconds, float accel, uint32_t recursionDepth)
+void Faller::UpdateXPosAndVel(double timeDeltaInSeconds, float accel)
+{
+    bool exceedsLeftLimitPos = true;
+    bool exceedsRightLimitPos = true;
+
+    AttemptXNaiveIntegration(timeDeltaInSeconds, accel, exceedsLeftLimitPos, exceedsRightLimitPos);
+
+    if (exceedsLeftLimitPos || exceedsRightLimitPos)
+    {
+        float limitPos = exceedsLeftLimitPos ? LEFT_LIMIT_POSITION : RIGHT_LIMIT_POSITION;
+        float pos = exceedsLeftLimitPos ? LeftPosition() : RightPosition();
+
+        double bounceTimeDelta = GetBounceTimeDelta(timeDeltaInSeconds, pos, limitPos,
+                                                    _xVelocityInUnitsPerSecond, accel);
+        double remainingTime = timeDeltaInSeconds - bounceTimeDelta;
+
+        // Jump to 'bounceTimeDelta' i.e. instant the bounce occurs
+        _xPosition = exceedsLeftLimitPos ? (limitPos + _halfWidth) : (limitPos - _halfWidth);
+        _xVelocityInUnitsPerSecond *= -1.0f; // Bounce off (perfectly elastic, i.e. no energy loss)
+
+        // Attempt to integrate for the remaining duration
+        bool exceedsLeftLimitPosAgain = true;
+        bool exceedsRightLimitPosAgain = true;
+        AttemptXNaiveIntegration(remainingTime, accel, exceedsLeftLimitPosAgain,
+                                 exceedsRightLimitPosAgain);
+
+        if (exceedsRightLimitPosAgain || exceedsRightLimitPosAgain)
+        {
+            // Assert consistency with original exceedence
+            // (would be weird if the opposite limit was being exceeded now)
+            assert(exceedsLeftLimitPos == exceedsLeftLimitPosAgain);
+            assert(exceedsRightLimitPos == exceedsRightLimitPosAgain);
+
+            // If the solution exceeds the limits again then the velocity is not strong enough to
+            // overcome the acceleration; Null velocity altogether
+            _xVelocityInUnitsPerSecond = 0.0f;
+        }
+    }
+}
+
+void Faller::AttemptXNaiveIntegration(double timeDeltaInSeconds, float accel,
+                                      bool& exceedsLeftLimitPos, bool& exceedsRightLimitPos)
 {
     float _xPrevPosition = _xPosition;
     float _xPrevVelocity = _xVelocityInUnitsPerSecond;
 
-    // Try naive integration first
+    // Try naive integration (may result in left/right bounds exceedance)
     UpdatePosAndVel(timeDeltaInSeconds, _xPosition, _xVelocityInUnitsPerSecond, accel);
 
-    bool exceedsLeftLimitPos = (LeftPosition() < LEFT_LIMIT_POSITION);
-    bool exceedsRightLimitPos = (RightPosition() > RIGHT_LIMIT_POSITION);
+    exceedsLeftLimitPos = (LeftPosition() < LEFT_LIMIT_POSITION);
+    exceedsRightLimitPos = (RightPosition() > RIGHT_LIMIT_POSITION);
 
     if (exceedsLeftLimitPos || exceedsRightLimitPos)
     {
         // Revert to values prior to naive integration attempt
         _xPosition = _xPrevPosition;
         _xVelocityInUnitsPerSecond = _xPrevVelocity;
-
-        float limitPos = exceedsLeftLimitPos ? LEFT_LIMIT_POSITION : RIGHT_LIMIT_POSITION;
-        float pos = exceedsLeftLimitPos ? LeftPosition() : RightPosition();
-
-        float bounceTimeDelta = GetBounceTimeDelta(timeDeltaInSeconds, pos, limitPos,
-                                                   _xVelocityInUnitsPerSecond, accel);
-        float remainingTime = timeDeltaInSeconds - bounceTimeDelta;
-
-        // Jump to 'bounceTimeDelta' i.e. instant the bounce occurs
-        _xPosition = exceedsLeftLimitPos ? (limitPos + _halfWidth) : (limitPos - _halfWidth);
-        _xVelocityInUnitsPerSecond *= -1.0f; // Bounce off (perfectly elastic, i.e. no energy loss)
-
-        assert(recursionDepth < 150); // TODO REMOVE
-
-        if ((recursionDepth > 0) && (bounceTimeDelta < ONE_PERCENT_OF(remainingTime)))
-        {
-            // X-axis velocity is not large enough.
-            // Nip excessive recursion in the bud by nulling velocity altogether
-            _xVelocityInUnitsPerSecond = 0.0f;
-        }
-        else
-        {
-            // Re-enter to calculate remaining solution
-            UpdateXPosAndVel(remainingTime, accel, ++recursionDepth);
-        }
     }
 }
 
-float Faller::GetBounceTimeDelta(float intervalInSeconds, float position, float limitPosition,
-                                 float velocity, float accel)
+double Faller::GetBounceTimeDelta(double intervalInSeconds, float position, float limitPosition,
+                                  float velocity, float accel)
 {
     // Solve quadratic equation: at which point in time is the limit position reached?
-    float a = accel / 2.0f;
-    float b = velocity;
-    float c = position - limitPosition;
-    float smallest;
-    float largest;
+    double a = accel / 2.0f;
+    double b = velocity;
+    double c = position - limitPosition;
+    double smallest;
+    double largest;
     SolveQuadraticEq(a, b, c, smallest, largest);
 
     // Pick largest solution if it's within the total time delta, otherwise pick the smallest
-    float bounceTime = (largest <= intervalInSeconds) ? largest : smallest;
-    assert(bounceTime >= 0.0f);
+    double bounceTime = (largest <= intervalInSeconds) ? largest : smallest;
+    assert(bounceTime >= 0.0);
     return bounceTime;
 }
 
-void Faller::SolveQuadraticEq(float a, float b, float c, float& smallestSolution,
-                              float& largestSolution)
+void Faller::SolveQuadraticEq(double a, double b, double c, double& smallestSolution,
+                              double& largestSolution)
 {
     assert(a != 0.0f);
 
     // We're expecting real solutions only
-    float discriminant = std::pow(b, 2.0f) - (4.0f * a * c);
-    assert(discriminant >= -1e-4f);
+    double discriminant = std::pow(b, 2.0) - (4.0 * a * c);
+    assert(discriminant >= -1e-4);
 
-    float sqrtOfDiscriminant = std::sqrt(discriminant);
-    float denominator = 2 * a;
+    double sqrtOfDiscriminant = std::sqrt(discriminant);
+    double denominator = 2.0 * a;
 
-    float s1 = (-b - sqrtOfDiscriminant) / denominator;
-    float s2 = (-b + sqrtOfDiscriminant) / denominator;
+    double s1 = (-b - sqrtOfDiscriminant) / denominator;
+    double s2 = (-b + sqrtOfDiscriminant) / denominator;
 
     smallestSolution = std::min(s1, s2);
     largestSolution = std::max(s1, s2);
