@@ -21,6 +21,8 @@ The game, _Catch!_, features the same gameplay style as its spiritual predecesso
 * A `Catcher` (i.e. "basket") which can be moved left and right, and
 * Pseudo-randomly generated objects which the player must catch in order to score points.
 
+<img src="example.gif"/>
+
 
 # How to build
 
