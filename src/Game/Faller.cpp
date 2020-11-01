@@ -4,8 +4,6 @@
 #include <cassert>
 #include <cmath>
 
-#define ONE_PERCENT_OF(_v) (0.01f * (float)(_v))
-
 Faller::~Faller()
 {
 }
