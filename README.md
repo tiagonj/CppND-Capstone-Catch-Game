@@ -248,7 +248,9 @@ The following is an incomplete list of areas for future development/improvement:
   * `std::mutex` and `std::lock_guard` are used in the critical sections that lie on the interface between the main execution thread (`Application`, `Game`, `Renderer`) and the Faller factory threads (e.g. `AvocadoFactory`), in particular:
      * Pausing, resuming and ordering termination of the factory threads (`FallerFactory.cpp` circa line `55` and below)
      * Passing a created `Faller` object from its factory into the `FallerQueue` (`FallerQueue.cpp` circa line `11`) and the removal of these `Faller` objects from the `FallerQueue` by the `Game` object (`FallerQueue.cpp` circa line `17`)
-* ❌ A condition variable is used in the project
+* ✅ A condition variable is used in the project
+  * When the game becomes paused, a `std::condition_variable` is used in the `FallerFactory` class to wait (`WaitUntilNoLongerPaused()` in `FallerFactory.cpp` circa line `85`) until the thread receives the order to either resume (circa line `65`) or terminate (circa line `73`)
+
 
 # Copyright information
 

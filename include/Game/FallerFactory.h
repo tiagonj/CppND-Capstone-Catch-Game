@@ -4,6 +4,7 @@
 #include "Faller.h"
 #include "FallerQueue.h"
 
+#include <condition_variable>
 #include <cstdint>
 #include <memory>
 #include <mutex>
@@ -33,6 +34,7 @@ class FallerFactory
 
   private:
     bool IsNextState(FallerFactoryState state);
+    void WaitUntilNoLongerPaused();
     void Sleep(uint32_t sleepDurationInMilliseconds);
     void AddFallerToGame();
     float GenerateHorizontalPosition();
@@ -46,6 +48,7 @@ class FallerFactory
 
   private:
     std::mutex _nextStateMutex;
+    std::condition_variable _conditionVariable;
     FallerFactoryState _nextState;
     std::mt19937 _generationEngine;
     std::mt19937 _horizontalPositionEngine;

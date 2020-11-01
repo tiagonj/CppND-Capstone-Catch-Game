@@ -5,8 +5,6 @@
 #include <chrono>
 #include <thread>
 
-#define PAUSE_SLEEP_DURATION_IN_MS (10)
-
 FallerFactory::FallerFactory(double generationProbabilty, uint32_t updatePeriodInMs,
                              float maxVerticalVelocityMagnitude, std::weak_ptr<FallerQueue>& queue)
     : _nextState(FallerFactoryState::_kPause), // Purposely start in the paused state
@@ -35,7 +33,7 @@ void FallerFactory::Run()
     {
         if (IsNextState(FallerFactoryState::_kPause))
         {
-            Sleep(PAUSE_SLEEP_DURATION_IN_MS);
+            WaitUntilNoLongerPaused();
         }
         else
         {
@@ -64,6 +62,7 @@ void FallerFactory::Resume()
     std::lock_guard<std::mutex> lock(_nextStateMutex);
     assert(FallerFactoryState::_kPause == _nextState);
     _nextState = FallerFactoryState::_kRun;
+    _conditionVariable.notify_one();
 }
 
 void FallerFactory::Terminate()
@@ -71,12 +70,19 @@ void FallerFactory::Terminate()
     std::lock_guard<std::mutex> lock(_nextStateMutex);
     assert(FallerFactoryState::_kTerminate != _nextState);
     _nextState = FallerFactoryState::_kTerminate;
+    _conditionVariable.notify_one();
 }
 
 bool FallerFactory::IsNextState(FallerFactoryState state)
 {
     std::lock_guard<std::mutex> lock(_nextStateMutex);
     return state == _nextState;
+}
+
+void FallerFactory::WaitUntilNoLongerPaused()
+{
+    std::unique_lock<std::mutex> lock(_nextStateMutex);
+    _conditionVariable.wait(lock, [this] { return (FallerFactoryState::_kPause != _nextState); });
 }
 
 void FallerFactory::Sleep(uint32_t sleepDurationInMilliseconds)
